@@ -49,5 +49,24 @@ For example, "pr.tauphi" will control the size of "sigma.phi", such that if "sig
 The above are hyperpriors, and therefore should be motivated by one's prior knowledge. Notice that in the hierarchical model, we place informative hyperpriors on the dispersion parameters, but admit no, or little, prior knowledge about the actual mean values of parameters.  
 
 <b>Citating: Bibtex</b>
-If you use or modify these codes, please cite JAGS, R, and the companion paper below Rankin et al. 2016. If you use the Tursiops data from Useless Loop, please cite Nicholson et al. 2012.
 
+If you use or modify these codes, please cite JAGS, R, and the companion paper below Rankin et al. 2016. If you use the Tursiops data from Useless Loop, please cite Nicholson et al. 2012. You can import the following into your reference manager:
+
+
+@article{rankin_full-capture_2016,
+	title = {A full-capture {Hierarchical} {Bayesian} model of {Pollock}'s {Closed} {Robust} {Design} and application to dolphins},
+	journal = {Frontiers in Marine Science},
+	author = {Rankin, Robert W. and Nicholson, Krista E. and Allen, Simon J. and Krützen, Michael and Bejder, Lars and Pollock, Kenneth H.},
+	year = {2016}
+}
+
+@article{nicholson_abundance_2012,
+	title = {Abundance, survival and temporary emigration of bottlenose dolphins (\textit{{Tursiops} sp.}) off {Useless} {Loop} in the western gulf of {Shark} {Bay}, {Western} {Australia}},
+	volume = {63},
+	doi = {10.1071/MF12210},
+	number = {11},
+	journal = {Marine and Freshwater Research},
+	author = {Nicholson, Krista and Bejder, Lars and Allen, Simon J. and Krützen, Michael and Pollock, Kenneth H.},
+	year = {2012},
+	pages = {1059--1068}
+}
