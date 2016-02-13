@@ -5,11 +5,13 @@ This contains a tutorial of several Robust Design (RD) Bayesian Mark-Recapture m
 
 The RD models are useful for the analysis of marked animals, estimating their abundance and demographic parameters like survival and movement. Importantly, the Hierarchical Bayesian model creates a flexible modelling environment to address several perreniel issues encountered in analogous 'fixed-effects' and Frequentist models, such as a type of 'model-averaging' and addressing individual heterogeneity.
 
+<b> Dependencies </b>
 This demo assumes the user has both R and JAGS installed, as well as the R package "rjags" to communicate between the two. See http://cran.r-project.org/ and http://mcmc-jags.sourceforge.net/. Most Linux distro have R/JAGS binaries available directly in standard repos. For example, Ubuntu users can simply by type:
-> sudo apt-get update\n
-> sudo apt-get install r-base-core r-base-dev jags\n
+> sudo apt-get update
+> sudo apt-get install r-base-core r-base-dev jags
 Once in R, type: install.package("rjags")
 
+<b> Files in the tutorial </b>
 There are 3 tutorials in 3 R files. Each tutorial presents a slightly different Bayesian model:
  - R_PCRD_JAGS_firstcapt_fixedeff.R 
  - R_PCRD_JAGS_fullcapt_fixedeff.R 
@@ -21,3 +23,9 @@ Other files are:
  - R_PCRD_JAGS_SOURCE.R
  - varous ".BUG" files. 
 The .inp file is a MARK data file containing capture histories for 5 years of photo-ID studies of the Bottlenose dolphins in Western Gulf Shark Bay, as presented originally in "Nicholson et al. 2012." Please cite Nicholson when using this data. The SOURCE file contains some handy auxilliary functions to make it easier to initialize the JAGS models (especially generating sensible initial values for the latent states of the HMM). The BUG files are automatically generating during the above tutorial R scripts, and are not strictly necessary; they have the raw JAGS syntax for each JAGS model.
+
+<b> Getting Started </b>
+After cloning the appropriate model, users can re-analysis the data from Rankin et al. (2016) and Nicholson et al. (2012) by simply stepping through the R and JAGS code.
+
+<b> Customizing For Other Studies </b>
+
