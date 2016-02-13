@@ -22,6 +22,7 @@ There are 3 tutorials in 3 R files. Each tutorial presents a slightly different 
  - R_PCRD_JAGS_firstcapt_fixedeff.R 
  - R_PCRD_JAGS_fullcapt_fixedeff.R 
  - R_PCRD_JAGS_hierarchical.R # USERS SHOULD START HERE!
+
 The first file is a tutorial for Pollock's Closed Robust Design, conditioning on first capture and is a "fixed-effects" version. The 2nd file is also a fixed effects version, but models individual entire capture-history, thereby facilitating inference of recruitment processes (births). The 3rd file is a Hierarchical Bayesian version, which will be of interest to most users: it can accomodate individual heterogeneity, full-capture modelling, and employs a peculiar type of "hyperprior" to induce a desireable shrinkage between fully time-varying parameters and time-constant parameters. In the companion paper, the authors argue that this hyperprior specification induces a type of "model-averaging" somewhat similar to the AICc-averaging that is ubiquitous in Mark-Recapture studies (thanks to Program MARK). 
 
 Other files are:
