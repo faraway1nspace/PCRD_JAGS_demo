@@ -77,4 +77,4 @@ If you use or modify these codes, please cite JAGS, R, and the companion paper b
 	pages = {1059--1068}
 }
 
-This project is possible because of the Shark Bay Innovation Project. See http://www.sharkbaydolphins.org/?page_id=90.
+This project is possible because of the Shark Bay Dolphin Innovation Project. See http://www.sharkbaydolphins.org/?page_id=90.
