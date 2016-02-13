@@ -1,0 +1,91 @@
+model{
+  #hyperpriors
+  phi.mu ~ dunif(pr.phiunif[1],pr.phiunif[2]) #mean survival with a Uniform prior
+  sigma.phi ~ dt(0,pr.tauphi[1],pr.tauphi[2]) T(0,) #mean survival dispersion, half-t hyperprior
+  g1.mu ~ dnorm(0,pr.g1mu) #mean gamma1, temp migration out | out
+  sigma.g1~dt(0,pr.taug1[1],pr.taug1[2]) T(0,) #mean gamma1 dispersion, half-t hyperprior
+  g2.mu ~ dnorm(0,pr.g2mu) #mean gamma2,  temp migration out | in
+  sigma.g2~dt(0,pr.taug2[1],pr.taug2[2]) T(0,) #mean gamma2 dispersion, half-t hyperprior
+  pd.mu ~ dnorm(0,pr.pdmu) #mean detection prob, overall 
+  sigma.pdmu~dt(0,pr.taupdmu[1],pr.taupdmu[2]) T(0,) #primary period detection prob dispersion
+  sigma.pd2nd~dt(0,pr.taupd2nd[1],pr.taupd2nd[2]) T(0,) #secondary periods detection prob dispersion 
+  sigma.eps ~ dt(0,pr.taueps[1],pr.taueps[2]) T(0,) #individual detection prob dispersion
+  #time-variant parameters 
+  for(t_ in 1:T){ #loop through primary periods
+    pd_mu[t_]~dnorm(pd.mu,pow(sigma.pdmu,-2)) #primary period mean detaction prob (logit)
+    lgamma1[t_]~dnorm(g1.mu,pow(sigma.g1,-2)) #prob migrate out|out (logit)
+    gamma1[t_] <- ilogit(lgamma1[t_]) #prob migrate out|out (probability)
+    lgamma2[t_]~dnorm(g2.mu,pow(sigma.g2,-2)) #prob migrate out|in (logit)
+    gamma2[t_] <- ilogit(lgamma2[t_]) #prob migrate out|in (probability)
+    #RECRUITMENT: psi is the 'inclusion probability' and lambda is the 'recruitment ratio'
+    psi[t_]~dunif(0,1) #inclusion probability
+    lambda[t_] <- (1-gamma1[t_])/(gamma2[t_]-gamma1[t_]+1) #long-term probability inside study area
+    #NOTE, lambda could also be a random variable with a beta prior
+    #secondary-period detection probabilities
+    for(tt_ in 1:T2[t_]){ #loop through secondary periods
+      pd[tt_,t_] ~ dnorm(pd_mu[t_],pow(sigma.pd2nd,-2))
+    } #tt_
+  } #t_
+  #first state transition (pure nusance; strictly from outside-pop to part of marked-pop)
+  trmat0[1] <- (1-psi[1]) #remains not-yet-in-pop
+  trmat0[2] <- 0
+  trmat0[3] <- psi[1]*(1-lambda[1]) #inclusion into pop, goes outside study are
+  trmat0[4] <- psi[1]*lambda[1] #inclusion into pop, goes inside study
+  #state transitions (2:T)
+  for(t_ in 1:(T-1)){
+    lphi[t_]~dnorm(log(phi.mu/(1-phi.mu)), pow(sigma.phi,-2)) #survival prob (logit)
+    phi[t_]<-ilogit(lphi[t_])
+    #state transitions 
+     #trmat: transition matrix for Markovian latent-states
+     #1 =not yet in population; 2=dead;3=offsite;4=onsite (only observable state)
+     #transition are from the column --> rows
+     #trmat[row,column,time] = [state at time=t_; state at time t_-1; time=t_]
+     #notice that the primary periods are offset by 1 (because we already dealt with T=1)
+     trmat[1,1,t_]<- 1-psi[t_+1] #excluded from pop
+     trmat[2,1,t_] <- 0 #dead
+     trmat[3,1,t_] <- psi[t_+1]*(1-lambda[t_+1]) #inclusion into pop,outside study
+     trmat[4,1,t_] <- psi[t_+1]*lambda[t_+1] #inclusion into pop,inside study
+     trmat[1,2,t_]<- 0
+     trmat[2,2,t_]<- 1 #stay dead
+     trmat[3,2,t_]<- 0
+     trmat[4,2,t_]<- 0
+     trmat[1,3,t_]<- 0
+     trmat[2,3,t_]<- 1-phi[t_] #dies outside
+     trmat[3,3,t_]<- gamma1[t_+1]*phi[t_] #stays outside | outside
+     trmat[4,3,t_]<- (1-gamma1[t_+1])*phi[t_] #reenters study area | outside
+     trmat[1,4,t_]<- 0 #
+     trmat[2,4,t_]<- 1-phi[t_] #dies inside
+     trmat[3,4,t_]<- gamma2[t_+1]*phi[t_] #leaves study area | inside
+     trmat[4,4,t_]<- (1-gamma2[t_+1])*phi[t_] #stays inside | inside
+  } #t_
+  #loop through M individuals
+  for (i in 1:M){
+    #state transitions and likelihood for the first primary period
+    z[i,1]~ dcat(trmat0) #z at time 0 is strictly 'not-yet-in-pop'
+    alive_i[i,1] <- step(z[i,1]-3) #count if i is alive or not
+    Nin_i[i,1] <- equals(z[i,1],4) #count if i is within study area
+    eps_i[i] ~ dnorm(0,pow(sigma.eps,-2)) #random effects at individual levels
+    #Observation error y[i,tt_,t_] ~ Bernoulli conditional on being inside z=4
+    for(tt_ in 1:T2[1]){  #loop through secondary periods
+       y[i,tt_,1] ~ dbern(equals(z[i,1],4)/(1+exp(-pd[tt_,1]-eps_i[i]))) #inverse-logit transform
+    }
+    #state transition and likelihood for primary periods 2:T
+    for(t_ in 2:T){ 
+      #State process: draw z(t_) conditional on  z(t_-1)
+      z[i,t_] ~ dcat(trmat[1:4, z[i,t_-1] , t_-1])
+      #Observation error y[i,tt_,t_] ~ Bernoulli condition on being inside z=4
+      for(tt_ in 1:T2[t_]){ #loop through secondary periods
+        y[i,tt_,t_] ~ dbern(equals(z[i,t_],4)/(1+exp(-pd[tt_,t_]-eps_i[i]))) #inverse-logit transform
+      }
+      #check whether i individual is alive and inside
+      alive_i[i,t_] <- step(z[i,t_]-3) #check alive
+      Nin_i[i,t_] <- equals(z[i,t_],4) #count if i is within study area
+    } #t_
+  } #i
+  #tally population size
+  for(t_ in 1:T){
+     alive[t_] <- sum(alive_i[,t_]) #number alive
+     Nin[t_] <- sum(Nin_i[,t_]) #number in study area
+  } #t_
+} #end model
+

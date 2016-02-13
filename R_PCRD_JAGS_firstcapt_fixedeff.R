@@ -88,7 +88,7 @@ for(t_ in 1:T){
 } #t_
 }"
 # save jags file to local disk
-modname2 <- "sdot_g2t_g1dot_ptt_firstcapt.BUG"
+modname2 <- "JAGS_firstcapt_fixedeff.JAG"
 sink(file=modname2)
 cat(jags.txt.2,fill=TRUE)
 sink()

@@ -1,0 +1,69 @@
+model{
+  # priors
+  phi ~ dbeta(pr.phi[1],pr.phi[2]) # apparent survival probability ADJUST FOR ECOLOGICAL CONTEXT
+  gamma1 ~ dbeta(pr.gamma1[1],pr.gamma1[2]) #  temp migration: probabilty stays out conditional on being out
+  # loop through primary periods: parameters for detection probability pd_t, and gamma2_t
+  for(t_ in 1:T){ # T primary periods...
+     pd_a[t_] ~ dgamma(pr.pd[1],pr.pd[2]) # hyperprior on detect probs
+     pd_b[t_] ~ dgamma(pr.pd[1],pr.pd[2]) # hyperprior on detect probs
+     for(tt_ in 1:T2[t_]){ # loop through secondary periods...
+        pd[tt_,t_] ~ dbeta(pd_a[t_],pd_b[t_]) # secondard-period-level detection probs
+     }
+     gamma2[t_] ~ dbeta(pr.gamma2[1],pr.gamma2[2]) # temp migration: prob migrates outside conditional on being inside
+     # recruitment process from eigenvector decomposition
+     lambda[1,t_] <- (1-gamma1)/(gamma2[t_]-gamma1+1) # recruitment ratio, or long-term prob of being inside
+     lambda[2,t_] <- 1-lambda[1,t_] # 
+     psi[t_] ~ dunif(0,1) # inclusion probability
+     # trmat: transition matrix for Markovian latent-states
+     # 1 =not yet in population;2=dead;3=offsite;4=onsite (only observable state)
+     # transition are from the column --> rows
+     # trmat[row,column,time] = [state at time=t_; state at time t_-1; time=t_]
+     trmat[1,1,t_] <- 1-psi[t_] # excluded from pop
+     trmat[2,1,t_] <- 0 # dead
+     trmat[3,1,t_] <- psi[t_]*lambda[2,t_] # inclusion into pop, outside study are
+     trmat[4,1,t_] <- psi[t_]*lambda[1,t_] # inclusion into pop, inside study area
+     trmat[1,2,t_]<- 0
+     trmat[2,2,t_]<- 1 # stay dead
+     trmat[3,2,t_]<- 0
+     trmat[4,2,t_]<- 0
+     trmat[1,3,t_]<- 0
+     trmat[2,3,t_]<- 1-phi # dies outside
+     trmat[3,3,t_]<- gamma1*phi # stays outside | outside
+     trmat[4,3,t_]<- (1-gamma1)*phi # reenters study area | outside
+     trmat[1,4,t_]<- 0 # 
+     trmat[2,4,t_]<- 1-phi # dies inside
+     trmat[3,4,t_]<- gamma2[t_]*phi # leaves study area | inside
+     trmat[4,4,t_]<- (1-gamma2[t_])*phi # stays inside | inside
+  } # t_ 
+  # likelihood: loop through M individuals, both real and pseudo-individuals
+  for (i in 1:M){ 
+    #draw latent state at primary period 1: 
+    # ... by definition, everyone starts in z=1 (not-in-population) at time=0 
+    z[i,1]~ dcat(trmat[1:4,1,1]) # first z strictly excluded from pop
+    # likelihood for first primary period
+    for(tt_ in 1:T2[1]){ # loop through secondary periods
+         # Bernouilli process, conditional on z=4, otherwise no observation
+         y[i,tt_,1] ~ dbern(pd[tt_,1]*equals(z[i,1],4)) 
+    }
+    alive_i[i,1] <- step(z[i,1]-3) # count if i is alive or not
+    Nin_i[i,1] <- equals(z[i,1],4) # count if i is within study area
+    # loop through primary periods after 1st primary periods
+    for(t_ in 2:T){
+      # state process: draw z(t_) conditional on z(t_-1)
+      z[i,t_] ~ dcat(trmat[1:4, z[i,t_-1] , t_])
+      # likelihood: loop through secondary period observations
+      for(tt_ in 1:T2[t_]){
+         # Bernouilli observation error, conditional on z=4
+         y[i,tt_,t_] ~ dbern(pd[tt_,t_]*equals(z[i,t_],4)) 
+      }
+      # tally population size 
+      alive_i[i,t_] <- step(z[i,t_]-3) # check alive or not
+      Nin_i[i,t_] <- equals(z[i,t_],4) # count if i is within study area
+    } # t_
+  } # i
+  # estimate population size per primary periods
+  for(t_ in 1:T){
+     alive[t_] <- sum(alive_i[,t_]) # number alive
+     Nin[t_] <- sum(Nin_i[,t_]) # number in study area
+  } # t_
+}

@@ -110,7 +110,7 @@ jags.txt.3 <-"model{
 } #end model
 "
 # save jags file to local disk
-modname3 <- "hierarchical_pcrd.BUG"
+modname3 <- "JAGS_HierBayes.JAG"
 sink(file=modname3)
 cat(jags.txt.3,fill=TRUE)
 sink()

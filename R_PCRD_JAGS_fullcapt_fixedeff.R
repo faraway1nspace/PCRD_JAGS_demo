@@ -87,7 +87,7 @@ jags.txt.1 <-"model{
   } # t_
 }"
 # save jags file to local disk
-modname1 <- "sdot_g2t_g1dot_ptt.BUG"
+modname1 <- "JAGS_fullcapt_fixedeff.JAG"
 sink(file=modname1)
 cat(jags.txt.1,fill=TRUE)
 sink()
