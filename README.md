@@ -21,15 +21,16 @@ Once in R, type:
 There are 3 tutorials in 3 R files. Each tutorial presents a slightly different Bayesian model:
  - R_PCRD_JAGS_firstcapt_fixedeff.R 
  - R_PCRD_JAGS_fullcapt_fixedeff.R 
- - R_PCRD_JAGS_hierarchical.R # USERS SHOULD START HERE!
+ - R_PCRD_JAGS_hierarchical.R (<b>USERS SHOULD START HERE!</b>)
 
 The first file is a tutorial for Pollock's Closed Robust Design, conditioning on first capture and is a "fixed-effects" version. The 2nd file is also a fixed effects version, but models individual entire capture-history, thereby facilitating inference of recruitment processes (births). The 3rd file is a Hierarchical Bayesian version, which will be of interest to most users: it can accomodate individual heterogeneity, full-capture modelling, and employs a peculiar type of "hyperprior" to induce a desireable shrinkage between fully time-varying parameters and time-constant parameters. In the companion paper, the authors argue that this hyperprior specification induces a type of "model-averaging" somewhat similar to the AICc-averaging that is ubiquitous in Mark-Recapture studies (thanks to Program MARK). 
 
 Other files are:
  - mark_capture_histories.inp
  - R_PCRD_JAGS_SOURCE.R
- - varous ".BUG" files. 
-The .inp file is a MARK data file containing capture histories for 5 years of photo-ID studies of the Bottlenose dolphins in Western Gulf Shark Bay, as presented originally in "Nicholson et al. 2012." Please cite Nicholson when using this data. The SOURCE file contains some handy auxilliary functions to make it easier to initialize the JAGS models (especially generating sensible initial values for the latent states of the HMM). The BUG files are automatically generating during the above tutorial R scripts, and are not strictly necessary; they have the raw JAGS syntax for each JAGS model.
+ - varous ".JAG" files (model syntax) 
+
+The .inp file is a MARK data file containing capture histories for 5 years of photo-ID studies of the Bottlenose dolphins in Western Gulf Shark Bay, as presented originally in "Nicholson et al. 2012." Please cite Nicholson when using this data. The SOURCE file contains some handy auxilliary functions to make it easier to initialize the JAGS models (especially generating sensible initial values for the latent states of the HMM). The JAG files are automatically generating during the above tutorial R scripts, and are not strictly necessary; they have the raw JAGS syntax for each JAGS model.
 
 <b> Getting Started </b>
 
@@ -37,7 +38,7 @@ After cloning the appropriate model, users can re-analysis the data from Rankin 
 
 <b> First-capture vs. Full-capture </b>
 
-Users interested in either a) individual heterogeneity, or b) estimating recruitment processes should use the full-capture models. An advantge of the first-capture model is that users can model intial capture probabilities as different from subsequent recapture probabilities (the p!=c specification in Program MARK). 
+Users interested in either a) individual heterogeneity, or b) estimating recruitment processes should use the full-capture models. An advantge of the first-capture model is that users can model intial capture probabilities as being different from subsequent recapture probabilities (i.e., the p!=c specification in Program MARK). WARNING: users interested in the first-capture conditioning should familiarize themselves with the WinBUGS 'zeros trick' for exotic Likelihood functions (The model uses a conditional multinomial distribution, the evaluation of which makes the JAGS Syntax somewhat daunting noob-users). 
 
 <b> Customizing For Other Studies: The Hierarchical Model Hyper-Priors </b>
 
@@ -48,6 +49,10 @@ For example, "pr.tauphi" will control the size of "sigma.phi", such that if "sig
 <b>We recommend tau >= 0.3^-2 and nu => 2 as good starting points for the half Student-t hyper-parameters (especially detection probabilities and gamma-double-prime)</b>. Such values will result in parameter values that are close to the MLEs (if there is a lot data), but will still be slighly shrunk to their time-constant values under weak/sparse data. However, for those parameters that are more difficult to identify and estimate, even with a lot of data, like survival and gamma-prime, it may be desireable to enforce more shrinkage. For example, in the bottlenose dolphin example, we had a prior expectation that there would be little year-to-year variation in apparent survival (survival should only vary 1-2% per year), and so we effectively coerced a near time-constant phi with the hyperparameters tau = 1/0.2^2, nu=13. 
 
 The above are hyperpriors, and therefore should be motivated by one's prior knowledge. Notice that in the hierarchical model, we place informative hyperpriors on the dispersion parameters, but admit no, or little, prior knowledge about the actual mean values of parameters.  
+
+<b> Initializing Bayesian RD Capture-Recapture models </b>
+
+The Capture-Recapture models are possible in JAGS because we can re-parameterize the Capture-Recapture process as a state-space model (or Hidden Markov Model). This means we have a stochastic time-series of 'latent states' z={<i>dead, inside, outside</i>} that are random variables just like any other random variable in the model. Unforunately, it means that we must provide initial values of z for JAGS, in order to start the MCMC chains. This is a pain in the posterior (!) for the novice user: ergo, we have provided a handy backwards-forwards algorithm to estimate initial values of these latent states z. See the "R_PCRD_JAGS_SOURCE.R".
 
 <b>Citating: Bibtex</b>
 
@@ -71,3 +76,5 @@ If you use or modify these codes, please cite JAGS, R, and the companion paper b
 	year = {2012},
 	pages = {1059--1068}
 }
+
+This project is possible because of the Shark Bay Innovation Project. See http://www.sharkbaydolphins.org/?page_id=90.
