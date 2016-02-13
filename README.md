@@ -6,8 +6,8 @@ This contains a tutorial of several Robust Design (RD) Bayesian Mark-Recapture m
 The RD models are useful for the analysis of marked animals, estimating their abundance and demographic parameters like survival and movement. Importantly, the Hierarchical Bayesian model creates a flexible modelling environment to address several perreniel issues encountered in analogous 'fixed-effects' and Frequentist models, such as a type of 'model-averaging' and addressing individual heterogeneity.
 
 This demo assumes the user has both R and JAGS installed, as well as the R package "rjags" to communicate between the two. See http://cran.r-project.org/ and http://mcmc-jags.sourceforge.net/. Most Linux distro have R/JAGS binaries available directly in standard repos. For example, Ubuntu users can simply by type:
-> sudo apt-get update
-> sudo apt-get install r-base-core r-base-dev jags
+> sudo apt-get update\n
+> sudo apt-get install r-base-core r-base-dev jags\n
 Once in R, type: install.package("rjags")
 
 There are 3 tutorials in 3 R files. Each tutorial presents a slightly different Bayesian model:
