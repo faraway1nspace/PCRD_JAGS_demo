@@ -30,11 +30,11 @@ Other files are:
  - R_PCRD_JAGS_SOURCE.R
  - various ".JAG" files (model syntax) 
 
-The .inp file is a MARK data file containing capture histories for 5 years of photo-ID studies of bottlenose dolphins in the western gulf of Shark Bay, as presented originally in "Nicholson et al. 2012." Please cite Nicholson when using this data. The SOURCE file contains some handy auxiliary functions to make it easier to initialize the JAGS models (especially generating sensible initial values for the latent-states of the HMM). The .JAG files are automatically generating when a user runs the above R tutorial scripts, and are not strictly necessary; they have the raw JAGS syntax for each JAGS model.
+The .inp file is a MARK data file containing capture histories for 5 years of photo-ID studies of bottlenose dolphins in the western gulf of Shark Bay, as presented originally in "Nicholson et al. 2012." Please cite Nicholson when using this data. The SOURCE file contains some handy auxiliary functions to make it easier to initialize the JAGS models (especially generating sensible initial values for the latent-states of the HMM). The .JAG files are automatically generated when a user runs the above R tutorial scripts, and are not strictly necessary; they have the raw JAGS syntax for each JAGS model.
 
 <b> Getting Started </b>
 
-After cloning the appropriate files, users can re-analysis the data from Rankin et al. (2016) and Nicholson et al. (2012) by simply stepping through the R tutorials. Users can tweak priors and model assumptions by customizing the JAGS model syntax (see the R files).
+After cloning the appropriate files, users can re-analyze the data from Rankin et al. (2016) and Nicholson et al. (2012) by simply stepping through the R tutorials. Users can tweak priors and model assumptions by customizing the JAGS model syntax (see the R files).
 
 <b> First-capture vs. Full-capture </b>
 
@@ -56,7 +56,7 @@ The Capture-Recapture models are possible in JAGS because we can re-parameterize
 
 <b>Citating: Bibtex</b>
 
-If you use or modify these codes, please cite JAGS, R, and the companion paper below Rankin et al. 2016. If you use the Tursiops data from Useless Loop, please cite Nicholson et al. 2012. You can import the following into your reference manager:
+If you use or modify these codes, please cite JAGS, R, and the companion paper below Rankin et al. 2016. If you use the bottlenose dolphin data from Useless Loop, please cite Nicholson et al. 2012. You can import the following into your reference manager:
 
 
 @article{rankin_full-capture_2016,
