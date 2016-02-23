@@ -1,0 +1,11 @@
+model{
+ # hyperprior
+ sigma ~ dt(0,pr.sigma.tau, pr.sigma.nu) T(0,) # scaled half student t
+ logit.mu ~ dnorm(0,pow(1.55,-2)) # location
+ p.mu = 1/(1+exp(-logit.mu))
+ for( i in 1:length(y)){
+    logit.p[i] ~ dnorm(logit.mu, pow(sigma,-2)) # logit(probability)
+    p[i] <- 1/(1+exp(-logit.p[i]))
+    y[i] ~ dbin(p[i], N) # binomial distribution
+ }
+}

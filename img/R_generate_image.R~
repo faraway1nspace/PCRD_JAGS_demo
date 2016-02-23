@@ -1,0 +1,86 @@
+# this is stricly to generat the image on the tutorial website
+# various scenarios:
+# sparse data, medium data, high data
+# nu = 1; nu =2; nu =4; nu=10
+# sig = 0.2
+library(rjags)
+library(boot)
+# start with the JAGS model
+jagstxt = 'model{
+ # hyperprior
+ sigma ~ dt(0,pr.sigma.tau, pr.sigma.nu) T(0,) # scaled half student t
+ logit.mu ~ dnorm(0,pow(1.55,-2)) # location
+ p.mu = 1/(1+exp(-logit.mu))
+ for( i in 1:length(y)){
+    logit.p[i] ~ dnorm(logit.mu, pow(sigma,-2)) # logit(probability)
+    p[i] <- 1/(1+exp(-logit.p[i]))
+    y[i] ~ dbin(p[i], N) # binomial distribution
+ }
+}'
+sink(file="make_studentT_graph.JAG")
+cat(jagstxt,fill=TRUE)
+sink()
+
+# scenario 1: low data
+data.size.vec = c(5,10,20,200)
+nu.vec <- c(2,4,10)
+sigma.vec <- c(0.1,0.2)
+scenarios <- expand.grid(data.size = data.size.vec, nu=nu.vec, sigma=sigma.vec)
+# generate data at particular MLE ratios; which will given different amounts of data
+N.groups = 10
+data.mles = seq(0,1,length.out=min(data.size.vec)+1) # pre-define MLE's
+mu.true = 0.5
+# each group is simulating a binomial response, 
+y.ratio.true = sample(data.mles, size=N.groups, replace=TRUE,prob=dbinom(data.mles*(length(data.mles)-1),size=min(data.size.vec),prob=mu.true))
+dhalft.prop <- function(x,sigma,nu) (((1 + (1/nu)*(x/sigma)^2)^(-(nu+1)/2))*(x>=0))
+dhalft <- function(x,sigma,nu) dhalft.prop(x,sigma,nu)/integrate(f=function(x) dhalft.prop(x,sigma=sigma,nu=nu),lower=0,upper=20)[[1]]
+for(s_ in 1:nrow(scenarios)){
+    jpeg(filename = paste0("img_",ifelse(nchar(s_)==1,paste0("0",s_),as.character(s_)),".jpg"),quality=80)
+    data.size = scenarios[s_,"data.size"]
+    nu = scenarios[s_,"nu"]
+    sigma = scenarios[s_,"sigma"]
+
+    # get the data
+    N = data.size; plotname = c("5"="sparse","10"="low","20"="moderate","200"="high")[as.character(N)]
+    y = y.ratio.true*(N)
+
+    nchains=4;nadapt=2000;nburn=1000;niter=20000;nsamp=300;thin_=round(niter/nsamp)
+    jagsdata = list(y=y,N=N,pr.sigma.tau = 1/(sigma^2), pr.sigma.nu = nu)
+    jagsinitsf = function(x){ list(sigma=runif(1,0,0.1), logit.mu=runif(1,0,1), logit.p=logit(runif(N.groups,0.2,0.8)))}
+    jagsinits = lapply(1:nchains,jagsinitsf)
+
+    # run the model
+    m <- jags.model(file="make_studentT_graph.JAG",data=jagsdata,inits=jagsinits,n.chains=nchains,n.adapt=nadapt)
+    update(m,nburn)
+    s <- coda.samples(m,variable.names=c("p","p.mu"),n.iter=niter,thin=thin_)
+    s2 = do.call("rbind",s);rm(s)
+
+    # make a plot of the hyperprior curve
+    par(mfrow=c(1,2),mgp=c(1.8,0.6,0),bty="l",family="Times",mar=c(3,3,1,0))
+    plot(c(0,1.2),c(0,8),xlab = expression(sigma), ylab = expression("density f("~sigma~")"),cex.lab=1.5,type="n")
+    # make a polygon of the curent density
+    xseq = seq(0.0001,1.5,0.01)
+    densy = dhalft(xseq,sigma=sigma,nu=nu)
+    polygon(c(xseq,rev(xseq)), c(densy,rep(0,length(densy))),col="grey80",border=NA)
+    lines(xseq,,col=curcol,lwd=3)    
+    curves_ = unique(scenarios[,c("sigma","nu")])
+    mutecol = "grey20"; curcol="purple" #
+    for(c_ in 1:nrow(curves_)){
+        lines(xseq,dhalft(xseq,sigma=curves_[c_,"sigma"],nu=curves_[c_,"nu"]),col=mutecol,lwd=1)
+    }
+    lines(xseq,dhalft(xseq,sigma=sigma,nu=nu),col=curcol,lwd=3) # current nu
+    eval(parse(text =paste0('text(x=1.2,y=6, labels=substitute("f("*sigma*")=T(0,s="*',sigma,'*","~nu~"=',nu,')I["~sigma>0~"]"),cex=2,pos=2,font=2)')))
+    # PLOTs: MLEs and posteriors,
+    plot(c(0,1),c(1,N.groups),xlab = "Capture probabilities p", ylab = "Group",cex.lab=1.5,type="n",main = paste("data quantity:",plotname))
+    lines(x=rep(mean(s2[,"p.mu"]),2),y=c(1,N.groups),col="purple",lwd=1,lty=2)    
+    for(k in 1:N.groups){
+        # draws 95%CI
+        lines(x = HPDinterval(as.mcmc(s2[,paste0("p[",k,"]")]))[1:2],y=rep(k,2),col="grey40",lwd=1)
+        lines(x = HPDinterval(as.mcmc(s2[,paste0("p[",k,"]")]),prob=0.68)[1:2],y=rep(k,2),col="purple",lwd=3)
+        points(c(mean(s2[,paste0("p[",k,"]")]), y.ratio.true[k]), y=rep(k,2), pch = c(19,8), col=c("purple","red"), cex=2)
+    }
+    legend(x="topright",legend=c("MLE","posterior mean"),pch = c(8,19), col=c("red","purple"), cex=2,bty="n")
+    dev.off()
+} # scenarios
+
+        
