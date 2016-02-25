@@ -71,7 +71,8 @@ If you use or modify these codes, please cite JAGS, R, and the companion paper b
 	title = {A full-capture {Hierarchical} {Bayesian} model of {Pollock}'s {Closed} {Robust} {Design} and application to dolphins},
 	journal = {Frontiers in Marine Science},
 	author = {Rankin, Robert W. and Nicholson, Krista E. and Allen, Simon J. and Krützen, Michael and Bejder, Lars and Pollock, Kenneth H.},
-	year = {2016}
+	year = {2016},
+	doi = {10.3389/fmars.2016.00025}
 }
 
 @article{nicholson_abundance_2012,
