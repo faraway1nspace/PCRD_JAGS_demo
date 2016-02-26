@@ -82,21 +82,43 @@ for(s_ in 1:nrow(scenarios)){
     }
     lines(xseq,dhalft(xseq,sigma=sigma,nu=nu),col=curcol,lwd=4) # current nu
 #    eval(parse(text =paste0('text(x=1.2,y=6, labels=expression("f("*sigma*")" %prop% "T(0, s="*',sigma,'*","~nu~"=',nu,')I["~sigma>0~"]"),cex=2,pos=2,font=2)')))
-    eval(parse(text =paste0('text(x=0.55,y=6, labels=expression("f("*sigma*")" %prop% "T("*mu*",s,"*nu*")I["~sigma>0~"]"),cex=2,font=2)')))
+
+
+    # SIGMA(s) PARAMETERIZATION of half-t
+#    eval(parse(text =paste0('text(x=0.55,y=6, labels=expression("f("*sigma*")" %prop% "T("*mu*",s,"*nu*")I["~sigma>0~"]"),cex=2,font=2)')))
+#    eval(parse(text =paste0('text(x=0.55,y=5.5, labels=expression(mu*"=0"),cex=2,font=2)')))
+    # three s values
+#    eval(parse(text =paste0('text(x=0.55,y=5.0, labels=expression("s="),cex=2,font=2,col="purple",pos=1)')))
+#    space=c(0.08,0.055)
+#    eval(parse(text =paste0('text(x=0.52-space[1]*1,y=5.2, labels="s=",cex=2,font=2,col="purple",pos=1)')))    
+#    eval(parse(text =paste0('text(x=0.52+space[1]*0,y=5.2, labels="',sigma.vec[1],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(sigma==sigma.vec[1])],pos=1)')))
+#    eval(parse(text =paste0('text(x=0.52+space[1]*1,y=5.2, labels="',sigma.vec[2],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(sigma==sigma.vec[2])],pos=1)')))
+#    eval(parse(text =paste0('text(x=0.52+space[1]*2,y=5.2, labels="',sigma.vec[3],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(sigma==sigma.vec[3])],pos=1)')))
+    # nu
+#    eval(parse(text =paste0('text(x=0.52-space[1]*1,y=4.7, labels=expression(nu*"="),cex=2,font=2,col="purple",pos=1)')))    
+#    eval(parse(text =paste0('text(x=0.52+space[2]*0,y=4.7, labels="',nu.vec[1],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[1])],pos=1)')))
+#    eval(parse(text =paste0('text(x=0.52+space[2]*1,y=4.7, labels="',nu.vec[2],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[2])],pos=1)')))
+#    eval(parse(text =paste0('text(x=0.52+space[2]*2,y=4.7, labels="',nu.vec[3],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[3])],pos=1)')))
+#    eval(parse(text =paste0('text(x=0.52+space[2]*3,y=4.7, labels="',nu.vec[4],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[4])],pos=1)')))
+
+    # TAU PARAMETERIZATION: JAGs uses the tau parameters
+    eval(parse(text =paste0('text(x=0.55,y=6, labels=expression("f("*sigma*")" %prop% "T("*mu*","*tau*","*nu*")"*1[group("[",sigma>0,"]")]),cex=2,font=2)'))) 
     eval(parse(text =paste0('text(x=0.55,y=5.5, labels=expression(mu*"=0"),cex=2,font=2)')))
     # three s values
 #    eval(parse(text =paste0('text(x=0.55,y=5.0, labels=expression("s="),cex=2,font=2,col="purple",pos=1)')))
-    space=c(0.08,0.055)
-    eval(parse(text =paste0('text(x=0.52-space[1]*1,y=5.2, labels="s=",cex=2,font=2,col="purple",pos=1)')))    
-    eval(parse(text =paste0('text(x=0.52+space[1]*0,y=5.2, labels="',sigma.vec[1],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(sigma==sigma.vec[1])],pos=1)')))
-    eval(parse(text =paste0('text(x=0.52+space[1]*1,y=5.2, labels="',sigma.vec[2],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(sigma==sigma.vec[2])],pos=1)')))
-    eval(parse(text =paste0('text(x=0.52+space[1]*2,y=5.2, labels="',sigma.vec[3],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(sigma==sigma.vec[3])],pos=1)')))
+    space=c(0.085,0.055)
+    eval(parse(text =paste0('text(x=0.52-space[1]*1,y=5.025, labels=expression(tau*"="),cex=2,font=2,col="purple",pos=1)')))    
+    eval(parse(text =paste0('text(x=0.52+space[1]*0,y=5.2, labels=expression(frac(1,',sigma.vec[1],'^2)),cex=1.5,font=2,col=c("grey80",curcol)[1+1*(sigma==sigma.vec[1])],pos=1)')))
+    eval(parse(text =paste0('text(x=0.52+space[1]*1,y=5.2, labels=expression(frac(1,',sigma.vec[2],'^2)),cex=1.5,font=2,col=c("grey80",curcol)[1+1*(sigma==sigma.vec[2])],pos=1)')))
+    eval(parse(text =paste0('text(x=0.52+space[1]*2,y=5.2, labels=expression(over(1,',sigma.vec[3],'^2)),cex=1.5,font=2,col=c("grey80",curcol)[1+1*(sigma==sigma.vec[3])],pos=1)')))
     # nu
-    eval(parse(text =paste0('text(x=0.52-space[1]*1,y=4.7, labels=expression(nu*"="),cex=2,font=2,col="purple",pos=1)')))    
-    eval(parse(text =paste0('text(x=0.52+space[2]*0,y=4.7, labels="',nu.vec[1],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[1])],pos=1)')))
-    eval(parse(text =paste0('text(x=0.52+space[2]*1,y=4.7, labels="',nu.vec[2],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[2])],pos=1)')))
-    eval(parse(text =paste0('text(x=0.52+space[2]*2,y=4.7, labels="',nu.vec[3],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[3])],pos=1)')))
-    eval(parse(text =paste0('text(x=0.52+space[2]*3,y=4.7, labels="',nu.vec[4],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[4])],pos=1)')))            
+    eval(parse(text =paste0('text(x=0.52-space[1]*1,y=4.3, labels=expression(nu*"="),cex=2,font=2,col="purple",pos=1)')))    
+    eval(parse(text =paste0('text(x=0.52+space[2]*0,y=4.3, labels="',nu.vec[1],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[1])],pos=1)')))
+    eval(parse(text =paste0('text(x=0.52+space[2]*1,y=4.3, labels="',nu.vec[2],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[2])],pos=1)')))
+    eval(parse(text =paste0('text(x=0.52+space[2]*2,y=4.3, labels="',nu.vec[3],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[3])],pos=1)')))
+    eval(parse(text =paste0('text(x=0.52+space[2]*3,y=4.3, labels="',nu.vec[4],'",cex=2,font=2,col=c("grey80",curcol)[1+1*(nu==nu.vec[4])],pos=1)')))
+
+    
     #eval(parse(text =paste0('text(x=0.55,y=4.5, labels=expression(nu*"=',nu,'"),cex=2,font=2,col="purple")')))    
     # PLOTs: MLEs and posteriors,
     plot(c(0,1),c(1,N.groups),xlab = "Capture probabilities p", ylab = "Group",cex.lab=1.5,type="n",main = paste("data quantity:",plotname),cex.main=1.8)
@@ -116,6 +138,6 @@ for(s_ in 1:nrow(scenarios)){
     dev.off()
 } # scenarios
 # make animated gif from png (on unix-like environments)
-# convert -delay 120 -loop 0 +map *.png HalfTdemo.gif  # 2.5
-# convert -delay 100 -loop 0 +dither -map *.png animation.gif # 2.6
 # convert -delay 120 -loop 0 -layers optimize *.png HalfTdemo.gif  # 681kb
+# rm .Rhistory
+# rm *.png
