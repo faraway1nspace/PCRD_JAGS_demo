@@ -1,7 +1,7 @@
 # PCRD_JAGS_demo
 A full-capture Hierarchical Bayesian model of Pollock's Closed Robust Design and application to dolphins
 
-This contains a tutorial of several Robust Design (RD) Bayesian Mark-Recapture models, as presented in the paper [Rankin RW, Nicholson K, Allen SJ, Krützen M, Bejder L, Pollock KH. 2016. A full-capture Hierarchical Bayesian model of Pollock's Closed Robust Design and application to dolphins. Frontiers in Marine Science, doi: 10.3389/fmars.2016.00025](https://drive.google.com/file/d/0BxeoeRy1g2juc2dZb0NCSXk5ZU0). This tutorial also uses data directly from the parent publication: [Nicholson K, Bejder L, Allen SJ, Krützen M, and Pollock KH. 2012. Abundance, survival and temporary emigration of bottlenose dolphins (Tursiops sp.) off Useless Loop in the western gulf of Shark Bay, Western Australia. Marine and Freshwater Research 63:1059–1068](http://www.publish.csiro.au/?paper=MF12210). Please cite both these studies if using this code and data (See BIBTEX citations at the end of this read me). 
+This contains a tutorial of several Robust Design (RD) Bayesian Mark-Recapture models, as presented in the paper [Rankin RW, Nicholson K, Allen SJ, Krützen M, Bejder L, Pollock KH. 2016. A full-capture Hierarchical Bayesian model of Pollock's Closed Robust Design and application to dolphins. Frontiers in Marine Science 3:25, doi: 10.3389/fmars.2016.00025](http://journal.frontiersin.org/article/10.3389/fmars.2016.00025) (alt. download [pdf here](https://drive.google.com/file/d/0BxeoeRy1g2juc2dZb0NCSXk5ZU0)). This tutorial also uses data directly from the parent publication: [Nicholson K, Bejder L, Allen SJ, Krützen M, and Pollock KH. 2012. Abundance, survival and temporary emigration of bottlenose dolphins (Tursiops sp.) off Useless Loop in the western gulf of Shark Bay, Western Australia. Marine and Freshwater Research 63:1059–1068](http://www.publish.csiro.au/?paper=MF12210). Please cite both these studies if using this code and data (See BIBTEX citations at the end of this read me). 
 
 The RD models are useful for the analysis of marked animals, estimating their abundance and demographic parameters, such as survival and movement. Importantly, the Hierarchical Bayesian (HB) model creates a flexible modelling environment to address several perennial issues encountered in Frequentist models 'fixed-effects' models. For example, HB results can be very similar to 'model-averaging' estimates. HB can also trivially model individual heterogeneity in detection probabilities (the bane of most mark-recapture studies).
 
@@ -72,6 +72,9 @@ If you use or modify these codes, please cite JAGS, R, and the companion paper b
 	journal = {Frontiers in Marine Science},
 	author = {Rankin, Robert W. and Nicholson, Krista E. and Allen, Simon J. and Krützen, Michael and Bejder, Lars and Pollock, Kenneth H.},
 	year = {2016},
+        volume = {3},
+        number = {25},
+        url = {http://journal.frontiersin.org/article/10.3389/fmars.2016.00025},
 	doi = {10.3389/fmars.2016.00025}
 }
 
