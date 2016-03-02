@@ -1,3 +1,5 @@
+<span class='Z3988' title='url_ver=Z39.88-2004&amp;ctx_ver=Z39.88-2004&amp;rfr_id=info%3Asid%2Fzotero.org%3A2&amp;rft_id=info%3Adoi%2F10.3389%2Ffmars.2016.00025&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Ajournal&amp;rft.genre=article&amp;rft.atitle=A%20full-capture%20Hierarchical%20Bayesian%20model%20of%20Pollock&apos;s%20Closed%20Robust%20Design%20and%20application%20to%20dolphins&amp;rft.jtitle=Frontiers%20in%20Marine%20Science&amp;rft.volume=3&amp;rft.issue=25&amp;rft.aufirst=Robert%20W.&amp;rft.aulast=Rankin&amp;rft.au=Robert%20W.%20Rankin&amp;rft.au=Krista%20E.%20Nicholson&amp;rft.au=Simon%20J.%20Allen&amp;rft.au=Michael%20Kr%C3%BCtzen&amp;rft.au=Lars%20Bejder&amp;rft.au=Kenneth%20H.%20Pollock&amp;rft.date=2016'></span>
+
 # PCRD_JAGS_demo
 A full-capture Hierarchical Bayesian model of Pollock's Closed Robust Design and application to dolphins
 
