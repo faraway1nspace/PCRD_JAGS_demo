@@ -25,7 +25,7 @@ Files in the tutorial
 ---------------------
 
 There are 3 tutorials in 3 R files. Each tutorial presents a slightly different Bayesian model:
- - [R_PCRD_JAGS_firstcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_firstcapt_fixedeff.R) -- fixed-effect model with temporary migration (conditions on first capture)
+ - [R_PCRD_JAGS_firstcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_firstcapt_fixedeff.R) -- 'fixed-effect model with temporary migration (conditions on first capture)'
  - [R_PCRD_JAGS_fullcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_fullcapt_fixedeff.R) ... like above, but adds recruitment processes and full-capture modelling.
  - [R_PCRD_JAGS_hierarchical.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_hierarchical.R) ... <b>USERS SHOULD START HERE!</b> A Hierarchical model that includes individual-heterogeneity and uses <i>hyperpriors</i> to achieve model parsimony (see the animation below) 
 
