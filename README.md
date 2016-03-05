@@ -40,7 +40,8 @@ The .inp file is a MARK data file containing capture histories for 5 years of ph
 
 After cloning the appropriate files, users can re-analyze the data from <a href="http://journal.frontiersin.org/article/10.3389/fmars.2016.00025">Rankin et al. (2016)</a> and <a href="http://www.publish.csiro.au/?paper=MF12210">Nicholson et al. (2012)</a> by simply stepping through the R tutorials. Users should tweak the <b>priors</b> and model assumptions by customizing the JAGS model syntax (see the R files).
 
-<h>Bayesian in Brief: Attention MARK users</h>
+Bayesian in Brief: Attention MARK users
+---------------------------------------
 Many readers will be coming to this tutorial with some experience with Program MARK.
 
 <b> First-capture vs. Full-capture </b>
