@@ -26,15 +26,15 @@ Files in the tutorial
 
 There are 3 tutorials in 3 R files. Each tutorial presents a slightly different Bayesian model:
  * [R_PCRD_JAGS_firstcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_firstcapt_fixedeff.R) -- 'fixed-effect model with temporary migration (conditions on first capture)'
- * [R_PCRD_JAGS_fullcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_fullcapt_fixedeff.R) ... like above, but adds recruitment processes and full-capture modelling.
- * [R_PCRD_JAGS_hierarchical.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_hierarchical.R) ... <b>USERS SHOULD START HERE!</b> A Hierarchical model that includes individual-heterogeneity and uses <i>hyperpriors</i> to achieve model parsimony (see the animation below) 
+ * [R_PCRD_JAGS_fullcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_fullcapt_fixedeff.R) -- like above, but adds recruitment processes and full-capture modelling.
+ * [R_PCRD_JAGS_hierarchical.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_hierarchical.R) -- <b>USERS SHOULD START HERE!</b> A Hierarchical model that includes individual-heterogeneity and uses <i>hyperpriors</i> to achieve model parsimony (see the animation below) 
 
 The first file [R_PCRD_JAGS_firstcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_firstcapt_fixedeff.R) is a tutorial for Pollock's Closed Robust Design, conditioning on first capture and is a "fixed-effects" version. The 2nd file [R_PCRD_JAGS_fullcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_fullcapt_fixedeff.R) is also a fixed-effects version, but models the entire capture-history, thereby facilitating inference about recruitment processes (births). The 3rd file [R_PCRD_JAGS_hierarchical.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_hierarchical.R) is a Hierarchical Bayesian version, which will be of interest to most users: it can accommodate individual heterogeneity, full-capture modelling, and employs a peculiar type of "hyperprior" to induce a desirable shrinkage between fully time-varying parameters and time-constant parameters. In the companion paper, the authors argue that this hyperprior specification results in a type of "model-averaging" somewhat similar to the AICc-averaging that is ubiquitous in Mark-Recapture studies (thanks to the popularity of Program MARK). 
 
 Other files are:
- - mark_capture_histories.inp
- - R_PCRD_JAGS_SOURCE.R
- - various ".JAG" files (model syntax) 
+ * [mark_capture_histories.inp](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/mark_capture_histories.inp) -- real bottlenose dolphin data from Useless Loop, Western Australia
+ * [R_PCRD_JAGS_SOURCE.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_SOURCE.R) -- handy R code to initialize JAGS
+ * various ".JAG" files (model syntax) 
 
 The .inp file is a MARK data file containing capture histories for 5 years of photo-ID studies of bottlenose dolphins in the western gulf of Shark Bay, as presented originally in <a href="http://www.publish.csiro.au/?paper=MF12210">Nicholson et al. (2012)</a>. Please cite Nicholson when using this data. The SOURCE file contains some handy auxiliary functions to make it easier to initialize the JAGS models (especially generating sensible initial values for the latent-states of the HMM). The .JAG files are automatically generated when a user runs the above R tutorial scripts, and are not strictly necessary; they have the raw JAGS syntax for each JAGS model.
 
