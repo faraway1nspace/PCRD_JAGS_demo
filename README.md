@@ -7,6 +7,8 @@ This contains a tutorial of several Robust Design (RD) Bayesian Mark-Recapture m
 
 The RD models are useful for the analysis of marked animals, estimating their abundance and demographic parameters, such as survival and movement. Importantly, the Hierarchical Bayesian (HB) model creates a flexible modelling environment to address several perennial issues encountered in Frequentist models 'fixed-effects' models. For example, HB results can be very similar to 'model-averaging' estimates. HB can also trivially model individual heterogeneity in detection probabilities (the bane of most mark-recapture studies).
 
+Inter minor plug for Bayesian here
+
 <b> Dependencies </b>
 
 This demo assumes the user has both R and JAGS installed, as well as the R package "rjags" to communicate between the two. See http://cran.r-project.org/ and http://mcmc-jags.sourceforge.net/. Most Linux distros have R/JAGS binaries available directly in standard repos. For example, Ubuntu users can simply type:
@@ -21,7 +23,7 @@ Once in R, type:
 <b> Files in the tutorial </b>
 
 There are 3 tutorials in 3 R files. Each tutorial presents a slightly different Bayesian model:
- - R_PCRD_JAGS_firstcapt_fixedeff.R 
+ - [R_PCRD_JAGS_firstcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_firstcapt_fixedeff.R)  
  - R_PCRD_JAGS_fullcapt_fixedeff.R  
  - R_PCRD_JAGS_hierarchical.R (<b>USERS SHOULD START HERE!</b> see the animation about hyperpriors) 
 
