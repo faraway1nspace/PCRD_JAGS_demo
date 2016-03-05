@@ -9,7 +9,8 @@ The RD models are useful for the analysis of marked animals, estimating their ab
 
 Inter minor plug for Bayesian here
 
-<b> Dependencies </b>
+Dependencies
+------------
 
 This demo assumes the user has both R and JAGS installed, as well as the R package "rjags" to communicate between the two. See http://cran.r-project.org/ and http://mcmc-jags.sourceforge.net/. Most Linux distros have R/JAGS binaries available directly in standard repos. For example, Ubuntu users can simply type:
 > sudo apt-get update
@@ -20,7 +21,8 @@ Once in R, type:
 
 > install.package("rjags")
 
-<b> Files in the tutorial </b>
+Files in the tutorial
+---------------------
 
 There are 3 tutorials in 3 R files. Each tutorial presents a slightly different Bayesian model:
  - [R_PCRD_JAGS_firstcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_firstcapt_fixedeff.R) ... fixed-effect model with temporary migration (conditions on first capture)
@@ -36,19 +38,22 @@ Other files are:
 
 The .inp file is a MARK data file containing capture histories for 5 years of photo-ID studies of bottlenose dolphins in the western gulf of Shark Bay, as presented originally in <a href="http://www.publish.csiro.au/?paper=MF12210">Nicholson et al. (2012)</a>. Please cite Nicholson when using this data. The SOURCE file contains some handy auxiliary functions to make it easier to initialize the JAGS models (especially generating sensible initial values for the latent-states of the HMM). The .JAG files are automatically generated when a user runs the above R tutorial scripts, and are not strictly necessary; they have the raw JAGS syntax for each JAGS model.
 
-<b> Getting Started </b>
+Getting Started
+---------------
 
 After cloning the appropriate files, users can re-analyze the data from <a href="http://journal.frontiersin.org/article/10.3389/fmars.2016.00025">Rankin et al. (2016)</a> and <a href="http://www.publish.csiro.au/?paper=MF12210">Nicholson et al. (2012)</a> by simply stepping through the R tutorials. Users should tweak the <b>priors</b> and model assumptions by customizing the JAGS model syntax (see the R files).
 
 Bayesian in Brief: Attention MARK users
 ---------------------------------------
-Many readers will be coming to this tutorial with some experience with Program MARK.
+Many readers will be coming to this tutorial with some experience with <b>Program MARK</b>. 
 
-<b> First-capture vs. Full-capture </b>
+First-capture vs. Full-capture
+------------------------------
 
 Users interested in either a) individual heterogeneity, or b) estimating recruitment processes should use the full-capture models. An advantage of the first-capture model is that users can model initial capture probabilities as being different from subsequent recapture probabilities (i.e., the p!=c specification in Program MARK). WARNING: users interested in the first-capture conditioning should familiarize themselves with the WinBUGS 'zeros trick'for exotic Likelihood functions (see http://users.aims.ac.za/~mackay/BUGS/Manuals/Tricks.html). Our First-capture models use a conditional multinomial distribution, the evaluation of which makes the JAGS Syntax somewhat more daunting for new users.
 
-<b> Customizing For Other Studies: The Hierarchical Model Hyper-Priors </b>
+Customizing For Other Studies: The Hierarchical Model Hyper-Priors
+------------------------------------------------------------------
 
 Users interested in the Hierarchical Bayesian (HB) model will likely want to change the "hyperparameters" that govern the amount of shrinkage between time-varying and time-constant parametrizations. The hyperparameters are passed to jags as 'data', called "pr.tauphi","pr.taug1","pr.taug2","pr.taupdmu","pr.taupd2nd","pr.taueps" in the JAGS syntax.  Each of these hyperparameters govern a hyperprior distribution called the Scaled Half Student-T, with hyperparameters "mu","tau", and "nu". The half-T has favourable shrinkage-inducing properties, in that when there is little evidence in the data for widely-varying parameters, it shrinks a dispersion parameter to its prior expectation (near 0) and enforces a near time-constant parametrization for a particular parameter; conversely, lots of evidence in the data can result in large dispersion parameters and fully-time varying parameterizations, close to MLEs. Intermediate values for the Student T hyperparameters seem to result in parameter estimates similar to AICc model-averaged estimates.
 
@@ -62,7 +67,8 @@ For example in JAGS, the "pr.tauphi" hyperparameters will govern the disribution
 
 The above are hyperpriors, and therefore should be motivated by one's prior knowledge. Notice that in the hierarchical model, we place informative hyperpriors on the <i>dispersion</i> parameters, but admit little prior knowledge about the actual <i>means</i> of parameters.  
 
-<b> Initializing Bayesian RD Capture-Recapture models </b>
+Initializing Bayesian RD Capture-Recapture models
+-------------------------------------------------
 
 The Capture-Recapture models are possible in JAGS because we can re-parameterize the Capture-Recapture process as a state-space model (or Hidden Markov Model). This means we have a stochastic time-series of 'latent states' z={<i>dead, inside, outside</i>} that are random variables just like any other random variable in the model. Unforunately, it means that we must provide initial values of z for JAGS, in order to start the MCMC chains. This is a pain in the posterior (!) for the novice user: ergo, we have provided a handy forwards-messaging/backwards-sampling algorithm to estimate initial values of these latent states z. See the "R_PCRD_JAGS_SOURCE.R".
 
@@ -70,7 +76,8 @@ The Capture-Recapture models are possible in JAGS because we can re-parameterize
 
 The problem with PCRD and Mark-recapture models for Maximum likelihood estimation is that these models are very parameter hungry, often 20 -30 parameters for a simple fixed-effect model. One is often in a situation of <i>sparse data</i>, <i> low-sample sizes</i>, and <i>over-parametrization</i>. Symptoms include boundary-level estimates (e.g., MLEs at 100% survival or 100% detectability) with meaningless estimates. A 100% survival estimate is just plain stupid, despite being the Maximum Likelihood. Subjective Bayesian models (i.e., <i>not</i> using 'reference priors') help smooth over these boundary-level estimates, yielding exact inference under any sample size. Of course, in such situations, the prior plays a larger role, but there is evidence from the Machine Learning community and their <i>prediction</i> perspective, that such weakly informative priors yeild better long-term predictions than MLEs alone. This is the problem with Frequentist methods: we are pretending our experiments are done in a vacuum, alone in the universe, without insight from long-term study and predictive assments. In this way, Subjective Bayesian models share something in common with "Regularization" employed in the Machine Learning community, a view that is explored in [Hooten and Hobbs 2015](http://www.esajournals.org/doi/abs/10.1890/14-0661.1).
 
-<b>Citating: Bibtex</b>
+Citating: Bibtex
+----------------
 
 If you use or modify these codes, please cite JAGS, R, and the companion paper below Rankin et al. 2016. If you use the bottlenose dolphin data from Useless Loop, please cite Nicholson et al. 2012. You can import the following into your reference manager:
 
