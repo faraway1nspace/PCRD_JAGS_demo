@@ -12,6 +12,7 @@ Bayesian: Brief Intro for MARK USERS
 Many readers will be coming to this tutorial with some experience with <b>Program MARK</b>, whichs hails from the 'frequentist' and IT-based 'model-averaging' school of analyses. In this tutorial we use the subjective Bayesian paradigm. The key distinction is that Mark provides fixed <i>point-estimates</i> of PCRD variables (like survival) which jointly "maximize the likelihood of having seen our data", and then does some brilliant frequentist math to estimate 95%Confidence Intervals for these variables. The Bayesian paradigm instead tries to estimate the probability distribution of our model variables, given tha we saw the data that we saw. These probability distributions are called "Posterior Distributions", because they include information from our "Prior" that is updated with information from the data. You can do anything you like with a Posterior distribution: most  people summarize it with a mean and 95% quantiles to approximate the point-estimates one gets in frequentism, but this isn't necessary. 
 
 <b> JAGS syntax </b>
+
 Many of the same models in MARK can be run in JAGS. But whereas MARK users are used to manipulating 'PIMS' to constrain and parameterize their models, the same thing is achieved more simply in the JAGS Bayesian Syntax (similar to R). For example, let's contrast two alternative parameterizations for a parameter '<i>phi</i>' (survival), such as time-varying survival <i>phi(t)</i> versus time-invariant survival <i>phi(dot)</i>. The two parameterizations can be represented in JAGS syntax as the following (assuming with have 5 primary periods):
 
 > phi ~ dbeta(1,1) # time-invariant
@@ -34,11 +35,21 @@ What is going on? The first block of code declares that <i>phi</i> is a "random 
 
 In the second block of code, notice that we also have a vector called <i>phi_t</i>, but instead of deterministically (<-) loading it with a single value (phi), <b>each element</b> of <i>phi_t</i> is itself an independent RV. Each has its own prior distribution, which all happen to be independent Beta distributions.
 
-Lets take a closer look at the Beta distribution and what the "dbeta(1,1)" means. The two 1's represent the shape parameters of the beta distribution which controls the nature of our prior information. dbeta(1,1) looks flat on the probability scale, and is generally thought of as a default "vague" or "weak" prior for RV's like survival. It says our prior expectation is that <i>E[phi]=0.5</i>, but we aren't very confidence. In fact, it is equivalent to only 1+1=2 'pseudo-observations'. Alternatively, if we were more certain of a particular value, e.g., <i>phi=0.8</i>, we could use the (relatively) weak dbeta(4,1): now our prior expectation <i>E[phi]=0.8</i>, and there is more probability density at high values, with a mode around 1. And yet, even dbeta(4,1) only amounts to about 4+1 'pseudo-observations'. Our <b>Posterior</b>
+<b>Priors</b>
+
+Lets take a closer look at the Beta distribution and what the "dbeta(1,1)" means. The two 1's represent the shape parameters of the Beta distribution which controls the nature of our prior information. dbeta(1,1) looks flat on the probability scale, and is generally thought of as a default "vague" or "weak" prior for RV's like survival. It says our prior expectation is that <i>E[phi]=0.5</i>, but we aren't very confident. In fact, it is equivalent to only 1+1=2 'pseudo-observations': we are about as sure about <i>phi</i> as having just seen two obsevations of {alive,dead} (which isn't a lot of information). Alternatively, if we were more certain of a particular value, e.g., <i>phi=0.8</i>, we could use the (relatively) weak dbeta(4,1): now our prior expectation is <i>E[phi]=0.8</i>, and there is more probability density at high values, with a mode around 1. And yet, even dbeta(4,1) only amounts to about 4+1 'pseudo-observations' or {alive,alive,alive,alive,dead}. Our <b>Posterior</b> distribution will be a mixture of the evidence in the data (what we actually observed) and our prior information. Users must understand two key points: <i>the less information we inject into our priors, the more our posterior point-estimates will be similar to the MLEs</i>; and similarly <i> the more information in our data (larger sample size, high detection probability), the more our posterior point-estimates will be similar to the MLEs</i>. This has one very important consequences for PCRD users, and <b>a key different between MARK and JAGS</b>
+
+* having a <i>low</i> detection probability means that you have very little information in your data; therefore, your posterior densities will very similar to your priors (so think carefully about them).
+* having a <i>low</i> detection probability means that MARK often spits out stupid MLE estimates at boundary values (e.g., p = 1).
+
+<b>Who's Afraid of MLE's? </b>
+
+The problem with PCRD and Mark-recapture models for Maximum likelihood estimation is that these models are very parameter hungry, often 20 -30 parameters for a simple fixed-effect model. One is often in a situation of <i>sparse data</i>, <i> low-sample sizes</i>, and <i>over-parametrization</i>. Symptoms include boundary-level estimates (e.g., MLEs at 100% survival or 100% detectability) with meaningless estimates. A 100% survival estimate is just plain stupid, despite being the Maximum Likelihood. Subjective Bayesian models (i.e., <i>not</i> using 'reference priors') help smooth over these boundary-level estimates, yielding exact inference under any sample size. Of course, in such situations, the prior plays a larger role, but there is evidence from the Machine Learning community and their <i>prediction</i> perspective, that such weakly informative priors yeild better long-term predictions than MLEs alone. This is the problem with Frequentist methods: we are pretending our experiments are done in a vacuum, alone in the universe, without insight from long-term study and predictive assments. In this way, Subjective Bayesian models share something in common with "Regularization" employed in the Machine Learning community, a view that is explored in [Hooten and Hobbs 2015](http://www.esajournals.org/doi/abs/10.1890/14-0661.1).
 
 
-Dependencies
-------------
+
+Getting Started
+---------------
 
 This demo assumes the user has both R and JAGS installed, as well as the R package "rjags" to communicate between the two. See http://cran.r-project.org/ and http://mcmc-jags.sourceforge.net/. Most Linux distros have R/JAGS binaries available directly in standard repos. For example, Ubuntu users can simply type:
 > sudo apt-get update
@@ -69,9 +80,6 @@ Other files are:
  * various ".JAG" files (model syntax) 
 
 The .inp file is a MARK data file containing capture histories for 5 years of photo-ID studies of bottlenose dolphins in the western gulf of Shark Bay, as presented originally in <a href="http://www.publish.csiro.au/?paper=MF12210">Nicholson et al. (2012)</a>. Please cite Nicholson when using this data. The SOURCE file contains some handy auxiliary functions to make it easier to initialize the JAGS models (especially generating sensible initial values for the latent-states of the HMM). The .JAG files are automatically generated when a user runs the above R tutorial scripts, and are not strictly necessary; they have the raw JAGS syntax for each JAGS model.
-
-Getting Started
----------------
 
 After cloning the appropriate files, users can re-analyze the data from <a href="http://journal.frontiersin.org/article/10.3389/fmars.2016.00025">Rankin et al. (2016)</a> and <a href="http://www.publish.csiro.au/?paper=MF12210">Nicholson et al. (2012)</a> by simply stepping through the R tutorials. Users should tweak the <b>priors</b> and model assumptions by customizing the JAGS model syntax (see the R files).
 
@@ -104,10 +112,6 @@ Please don't run the models without first importing "R_PCRD_JAGS_SOURCE.R" into 
 
 The file has a handy funtion to initialize JAGS variables. The Capture-Recapture models are possible in JAGS because we can re-parameterize the Capture-Recapture process as a state-space model (or Hidden Markov Model). This means we have a stochastic time-series of 'latent states' z={<i>dead, inside, outside</i>}. These are random variables just like any other random variable in the model. Unforunately, it means that we must provide initial values of z for JAGS, in order to start the MCMC chains. This is a pain in the posterior (!) for the novice user: ergo, we have provided a handy forwards-messaging/backwards-sampling algorithm to estimate initial values of these latent states z. 
 
-Who's Afraid of MLE's?
----------------------
-
-The problem with PCRD and Mark-recapture models for Maximum likelihood estimation is that these models are very parameter hungry, often 20 -30 parameters for a simple fixed-effect model. One is often in a situation of <i>sparse data</i>, <i> low-sample sizes</i>, and <i>over-parametrization</i>. Symptoms include boundary-level estimates (e.g., MLEs at 100% survival or 100% detectability) with meaningless estimates. A 100% survival estimate is just plain stupid, despite being the Maximum Likelihood. Subjective Bayesian models (i.e., <i>not</i> using 'reference priors') help smooth over these boundary-level estimates, yielding exact inference under any sample size. Of course, in such situations, the prior plays a larger role, but there is evidence from the Machine Learning community and their <i>prediction</i> perspective, that such weakly informative priors yeild better long-term predictions than MLEs alone. This is the problem with Frequentist methods: we are pretending our experiments are done in a vacuum, alone in the universe, without insight from long-term study and predictive assments. In this way, Subjective Bayesian models share something in common with "Regularization" employed in the Machine Learning community, a view that is explored in [Hooten and Hobbs 2015](http://www.esajournals.org/doi/abs/10.1890/14-0661.1).
 
 Citating: Bibtex
 ----------------
