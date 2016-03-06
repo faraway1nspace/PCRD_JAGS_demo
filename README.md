@@ -7,7 +7,27 @@ This contains a tutorial of several Robust Design (RD) Bayesian Mark-Recapture m
 
 The RD models are useful for the analysis of marked animals, estimating their abundance and demographic parameters, such as survival and movement. Importantly, the Hierarchical Bayesian (HB) model creates a flexible modelling environment to address several perennial issues encountered in Frequentist models 'fixed-effects' models. For example, HB results can be very similar to 'model-averaging' estimates. HB can also trivially model individual heterogeneity in detection probabilities (the bane of most mark-recapture studies).
 
-Inter minor plug for Bayesian here
+Bayesian: Brief Intro for MARK USERS
+------------------------------------
+Many readers will be coming to this tutorial with some experience with <b>Program MARK</b>, whichs hails from the 'frequentist' and IT-based 'model-averaging' school of analyses. Many of the same models in MARK can be run in JAGS. But whereas MARK users are used to manipulating 'PIMS' to constrain and parameterize their models, the same thing is achieved more simply in the JAGS Bayesian Syntax. For example, let's contrast two alternative parameterizations for a parameter '<i>phi</i>' (survival), such as time-varying survival <i>phi(t)</i> versus time-invariant survival <i>phi(dot)</i>. The two parameterizations can be represented in JAGS syntax as the following (assuming with have 5 primary periods):
+
+> phi ~ rbeta(1,1) # time-invariant
+
+> for(t_ in 1:4){ 
+
+>    phi_t[t_] <- phi
+
+> }
+
+... <i>contrasted with</i> ...
+
+> for(t_ in 1:4){ 
+
+>    phi_t[t_] ~ rbeta(1,1) # time-varying phi
+
+> }
+
+See the difference?
 
 Dependencies
 ------------
@@ -20,6 +40,8 @@ This demo assumes the user has both R and JAGS installed, as well as the R packa
 Once in R, type: 
 
 > install.package("rjags")
+
+> library("rjags")
 
 > source("R_PCRD_JAGS_SOURCE.R")
 
@@ -44,10 +66,6 @@ Getting Started
 ---------------
 
 After cloning the appropriate files, users can re-analyze the data from <a href="http://journal.frontiersin.org/article/10.3389/fmars.2016.00025">Rankin et al. (2016)</a> and <a href="http://www.publish.csiro.au/?paper=MF12210">Nicholson et al. (2012)</a> by simply stepping through the R tutorials. Users should tweak the <b>priors</b> and model assumptions by customizing the JAGS model syntax (see the R files).
-
-Bayesian in Brief: Attention MARK users
----------------------------------------
-Many readers will be coming to this tutorial with some experience with <b>Program MARK</b>. 
 
 First-capture vs. Full-capture
 ------------------------------
