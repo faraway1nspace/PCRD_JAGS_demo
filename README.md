@@ -13,7 +13,7 @@ Many readers will be coming to this tutorial with some experience with <b>Progra
 
 <b> JAGS syntax </b>
 
-Many of the same models in MARK can be run in JAGS. But whereas MARK users are used to manipulating 'PIMS' to constrain and parameterize their models, the same thing is achieved more simply in the JAGS Bayesian Syntax (similar to R). For example, let's contrast two alternative parameterizations for a parameter '<i>phi</i>' (survival), such as time-varying survival <i>phi(t)</i> versus time-invariant survival <i>phi(dot)</i>. The two parameterizations can be represented in JAGS syntax as the following (assuming with have 5 primary periods):
+Many of the same models in MARK can be run in JAGS. But whereas MARK users are used to manipulating 'PIMS' to constrain and parameterize their models, the same thing is achieved more simply in the JAGS Bayesian Syntax (similar to R). For example, let's contrast two alternative parameterizations for a parameter '<i>phi</i>' (survival), such as time-varying survival <i>phi(t)</i> versus time-invariant survival <i>phi(dot)</i>. The two parameterizations can be represented in the following JAGS syntax (assuming with have 5 primary periods):
 
 > phi ~ dbeta(1,1) # time-invariant
 
@@ -31,9 +31,9 @@ Many of the same models in MARK can be run in JAGS. But whereas MARK users are u
 
 > }
 
-What is going on? The first block of code declares that <i>phi</i> is a "random variable" (hence the tilde ~ operator) which has a prior distribution called the [beta distribution](https://en.wikipedia.org/wiki/Beta_distribution). There is only 1 <i>phi</i>, and it is deterministically loaded <-into a vector called <i>phi_t</i> (hence, the <- operator), with 4 elements to represent the survival between the 5 primary periods. All random variables need a prior distribution! Here, we use the Beta distribution, useful for RV's that are probabilities, like probability of survival from one primary period to the other
+What is going on? The first block of code declares that <i>phi</i> is a "random variable" (hence the tilde ~ operator) which has a prior distribution called the [beta distribution](https://en.wikipedia.org/wiki/Beta_distribution). There is only 1 <i>phi</i>, and it is deterministically loaded (<-) into a vector called <i>phi_t</i> (hence, the <- operator), with 4 elements to represent the survival between the 5 primary periods. All random variables need a prior distribution! Here, we use the Beta distribution, useful for RV's that are probabilities, like probability of survival from one primary period to the other.
 
-In the second block of code, notice that we also have a vector called <i>phi_t</i>, but instead of deterministically (<-) loading it with a single value (phi), <b>each element</b> of <i>phi_t</i> is itself an independent RV. Each has its own prior distribution, which all happen to be independent Beta distributions.
+In the second block of code, notice that we also have a vector called <i>phi_t</i>, but instead of deterministically (<-) loading it with a single value (phi), <b>each element</b> of <i>phi_t</i> is itself an independent RV. Each has its own prior distribution, which all happen to be independent Beta distributions. Therefore, survival is allowed to be different between different primary periods. Simple!
 
 <b>Priors</b>
 
@@ -42,10 +42,11 @@ Lets take a closer look at the Beta distribution and what the "dbeta(1,1)" means
 * having a <i>low</i> detection probability means that you have very little information in your data; therefore, your posterior densities will very similar to your priors (so think carefully about them).
 * having a <i>low</i> detection probability means that MARK often spits out stupid MLE estimates at boundary values (e.g., p = 1).
 
+This is the key benefit of Bayesian Mark-Recapture under low-sample sizes: whereas MARK often spits out garbage, the Bayesian posteriors will just return something similar to our prior information. What is the value of that?
+
 <b>Who's Afraid of MLE's? </b>
 
 The problem with PCRD and Mark-recapture models for Maximum likelihood estimation is that these models are very parameter hungry, often 20 -30 parameters for a simple fixed-effect model. One is often in a situation of <i>sparse data</i>, <i> low-sample sizes</i>, and <i>over-parametrization</i>. Symptoms include boundary-level estimates (e.g., MLEs at 100% survival or 100% detectability) with meaningless estimates. A 100% survival estimate is just plain stupid, despite being the Maximum Likelihood. Subjective Bayesian models (i.e., <i>not</i> using 'reference priors') help smooth over these boundary-level estimates, yielding exact inference under any sample size. Of course, in such situations, the prior plays a larger role, but there is evidence from the Machine Learning community and their <i>prediction</i> perspective, that such weakly informative priors yeild better long-term predictions than MLEs alone. This is the problem with Frequentist methods: we are pretending our experiments are done in a vacuum, alone in the universe, without insight from long-term study and predictive assments. In this way, Subjective Bayesian models share something in common with "Regularization" employed in the Machine Learning community, a view that is explored in [Hooten and Hobbs 2015](http://www.esajournals.org/doi/abs/10.1890/14-0661.1).
-
 
 
 Getting Started
