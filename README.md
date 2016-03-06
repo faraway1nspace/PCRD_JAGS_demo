@@ -111,7 +111,7 @@ Please don't run the models without first importing "R_PCRD_JAGS_SOURCE.R" into 
 
 > source("R_PCRD_JAGS_SOURCE.R")
 
-The file has a handy funtion to initialize JAGS variables. The Capture-Recapture models are possible in JAGS because we can re-parameterize the Capture-Recapture process as a state-space model (or Hidden Markov Model). This means we have a stochastic time-series of 'latent states' z={<i>dead, inside, outside</i>}. These are random variables just like any other random variable in the model. Unforunately, it means that we must provide initial values of z for JAGS, in order to start the MCMC chains. This is a pain in the posterior (!) for the novice user: ergo, we have provided a handy forwards-messaging/backwards-sampling algorithm to estimate initial values of these latent states z. 
+The file has a handy funtion to initialize JAGS variables. The Capture-Recapture models are possible in JAGS because we can re-parameterize the Capture-Recapture process as a state-space model (or Hidden Markov Model). This means we have a stochastic time-series of 'latent states' z={<i>dead, inside, outside</i>}. These are random variables just like any other random variable in the model. Unfortunately, it means that we must provide initial values of z for JAGS, in order to start the MCMC chains. This is a pain in the posterior for the novice user. Therefore, we have provided a handy forwards-messaging/backwards-sampling algorithm to estimate initial values of these latent states z. 
 
 
 Citating: Bibtex
