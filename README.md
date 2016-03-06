@@ -9,9 +9,12 @@ The RD models are useful for the analysis of marked animals, estimating their ab
 
 Bayesian: Brief Intro for MARK USERS
 ------------------------------------
-Many readers will be coming to this tutorial with some experience with <b>Program MARK</b>, whichs hails from the 'frequentist' and IT-based 'model-averaging' school of analyses. Many of the same models in MARK can be run in JAGS. But whereas MARK users are used to manipulating 'PIMS' to constrain and parameterize their models, the same thing is achieved more simply in the JAGS Bayesian Syntax. For example, let's contrast two alternative parameterizations for a parameter '<i>phi</i>' (survival), such as time-varying survival <i>phi(t)</i> versus time-invariant survival <i>phi(dot)</i>. The two parameterizations can be represented in JAGS syntax as the following (assuming with have 5 primary periods):
+Many readers will be coming to this tutorial with some experience with <b>Program MARK</b>, whichs hails from the 'frequentist' and IT-based 'model-averaging' school of analyses. In this tutorial we use the subjective Bayesian paradigm. The key distinction is that Mark provides fixed <i>point-estimates</i> of PCRD variables (like survival) which jointly "maximize the likelihood of having seen our data", and then does some brilliant frequentist math to estimate 95%Confidence Intervals for these variables. The Bayesian paradigm instead tries to estimate the probability distribution of our model variables, given tha we saw the data that we saw. These probability distributions are called "Posterior Distributions", because they include information from our "Prior" that is updated with information from the data. You can do anything you like with a Posterior distribution: most  people summarize it with a mean and 95% quantiles to approximate the point-estimates one gets in frequentism, but this isn't necessary. 
 
-> phi ~ rbeta(1,1) # time-invariant
+<b> JAGS syntax </b>
+Many of the same models in MARK can be run in JAGS. But whereas MARK users are used to manipulating 'PIMS' to constrain and parameterize their models, the same thing is achieved more simply in the JAGS Bayesian Syntax (similar to R). For example, let's contrast two alternative parameterizations for a parameter '<i>phi</i>' (survival), such as time-varying survival <i>phi(t)</i> versus time-invariant survival <i>phi(dot)</i>. The two parameterizations can be represented in JAGS syntax as the following (assuming with have 5 primary periods):
+
+> phi ~ dbeta(1,1) # time-invariant
 
 > for(t_ in 1:4){ 
 
@@ -23,11 +26,16 @@ Many readers will be coming to this tutorial with some experience with <b>Progra
 
 > for(t_ in 1:4){ 
 
->    phi_t[t_] ~ rbeta(1,1) # time-varying phi
+>    phi_t[t_] ~ dbeta(1,1) # time-varying phi
 
 > }
 
-See the difference?
+What is going on? The first block of code declares that <i>phi</i> is a "random variable" (hence the tilde ~ operator) which has a prior distribution called the [beta distribution](https://en.wikipedia.org/wiki/Beta_distribution). There is only 1 <i>phi</i>, and it is deterministically loaded <-into a vector called <i>phi_t</i> (hence, the <- operator), with 4 elements to represent the survival between the 5 primary periods. All random variables need a prior distribution! Here, we use the Beta distribution, useful for RV's that are probabilities, like probability of survival from one primary period to the other
+
+In the second block of code, notice that we also have a vector called <i>phi_t</i>, but instead of deterministically (<-) loading it with a single value (phi), <b>each element</b> of <i>phi_t</i> is itself an independent RV. Each has its own prior distribution, which all happen to be independent Beta distributions.
+
+Lets take a closer look at the Beta distribution and what the "dbeta(1,1)" means. The two 1's represent the shape parameters of the beta distribution which controls the nature of our prior information. dbeta(1,1) looks flat on the probability scale, and is generally thought of as a default "vague" or "weak" prior for RV's like survival. It says our prior expectation is that <i>E[phi]=0.5</i>, but we aren't very confidence. In fact, it is equivalent to only 1+1=2 'pseudo-observations'. Alternatively, if we were more certain of a particular value, e.g., <i>phi=0.8</i>, we could use the (relatively) weak dbeta(4,1): now our prior expectation <i>E[phi]=0.8</i>, and there is more probability density at high values, with a mode around 1. And yet, even dbeta(4,1) only amounts to about 4+1 'pseudo-observations'. Our <b>Posterior</b>
+
 
 Dependencies
 ------------
