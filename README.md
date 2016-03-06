@@ -125,7 +125,7 @@ Citating: Bibtex
 If you modify or draw inspiration from our code, please cite JAGS, R, and the companion paper <a href="http://journal.frontiersin.org/article/10.3389/fmars.2016.00025">Rankin et al. (2016)</a>. If you use the bottlenose dolphin data from Useless Loop, please cite <a href="http://www.publish.csiro.au/?paper=MF12210">Nicholson et al. (2012)</a>. You can import the following into your reference manager:
 
 
-@article{rankin_full-capture_2016,
+> @article{rankin_full-capture_2016,
 	title = {A full-capture {Hierarchical} {Bayesian} model of {Pollock}'s {Closed} {Robust} {Design} and application to dolphins},
 	journal = {Frontiers in Marine Science},
 	author = {Rankin, Robert W. and Nicholson, Krista E. and Allen, Simon J. and Krützen, Michael and Bejder, Lars and Pollock, Kenneth H.},
@@ -136,7 +136,7 @@ If you modify or draw inspiration from our code, please cite JAGS, R, and the co
 	doi = {10.3389/fmars.2016.00025}
 }
 
-@article{nicholson_abundance_2012,
+> @article{nicholson_abundance_2012,
 	title = {Abundance, survival and temporary emigration of bottlenose dolphins (\textit{{Tursiops} sp.}) off {Useless} {Loop} in the western gulf of {Shark} {Bay}, {Western} {Australia}},
 	volume = {63},
 	doi = {10.1071/MF12210},
