@@ -2,6 +2,7 @@
 # Users should focus on the hyperpriors pr.taug2,pr.taug1,pr.tauphi,pr.taupd, prtaupd2nd, prtaupdi as these control the amount of shrinkage between a fully-time-varying specification to a time-invariant Theta(.) specification. I.e., its only the dispersion parameters (sigma.pdmu,sigma.g1,sigma.g2,sigma.phi,sigma.eps) that receive strongly informative (shrinkage-inducing) hyperpriors. The priors on the 'location' of parameters (pd.mu,g1.mu,g2.mu,phi.mu) are non-informative. 
 
 library(rjags)
+library(boot)
 source("R_PCRD_JAGS_SOURCE.R") # load some handy functions
 
 # load the Useless Loop (Western gulf Shark Bay) Tursiops aduncus captures histories from "Nicholson, Bejder, Allen,Krützen, Pollock. 2012. Abundance, survival and temporary emigration of bottlenose dolphins (Tursiops sp.) off Useless Loop in the western gulf of Shark Bay, Western Australia. Marine and Freshwater Research 63:1059–1068."
@@ -109,11 +110,11 @@ jags.txt.3 <-"model{
   } #t_
 } #end model
 "
-# save jags file to local disk
+# save jags text/code in object jags.txt.3 to local disk as a file to import into external program JAGS
 modname3 <- "JAGS_HierBayes.JAG"
-sink(file=modname3)
-cat(jags.txt.3,fill=TRUE)
-sink()
+sink(file=modname3) # this creates a new file called 'JAGS_HierBayes.JAG'
+cat(jags.txt.3,fill=TRUE) # this places the text from object jags.txt.3 into file JAGS_HierBayes.JAG
+sink() # this cloes the connection to file 'JAGS_HierBayes.JAG'
 
 # use Parameter-Expansion Data Augmentation method to model unseen individuals and full-capture histories
 n.aug <- N # a N
