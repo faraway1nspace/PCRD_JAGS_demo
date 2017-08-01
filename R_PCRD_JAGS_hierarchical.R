@@ -151,7 +151,8 @@ jags.data=list(y=Y.aug, T=T, T2=T2,M=mm,
 # initialize start values for each MCMC chain
 # user is expected to be able to initialize the univariate parameters;
 # I provide 'generate.z.psi' function which imputs values of latent states 'z' (forwards-backwards algorithm) as well as values of 'Psi' (full-capture conditioning)
-init.func = function(){    
+init.func = function(){
+    
     RET=list(
      phi.mu=runif(1,0.87,0.96), 
      sigma.phi=runif(1,0.0001,0.001)^0.5,
@@ -163,7 +164,8 @@ init.func = function(){
      sigma.pdmu=runif(1,0.01,0.025)^0.5,
      sigma.pd2nd=runif(1,0.005,0.015)^0.5,
      sigma.eps = runif(1,0.0005,0.0023)^0.5
-     )
+    )
+    
     RET=c(RET,list(
       lphi=rnorm(T-1,RET$phi.mu,sd=(RET$sigma.phi)),
       lgamma1=rnorm(T,RET$g1.mu,sd=(RET$sigma.g1)),
@@ -171,10 +173,15 @@ init.func = function(){
       pd_mu=rnorm(T,RET$pd.mu,sd=(RET$sigma.pdmu)),
       eps_i=rnorm(mm,0,sd=RET$sigma.eps))
       )
+    
     pd = matrix(NA,max(T2),T)
+    
     for(t_ in 1:T){ pd[1:T2[t_],t_]<-rnorm(T2[t_],RET$pd_mu[t_],(RET$sigma.pd2nd))}
+    
     RET=c(RET, list(pd=pd))
+    
     RET=c(RET, generate.z.psi(y=Y.aug,T2=T2,first.capture=FALSE,z.priors = list(phi.beta=c(shape1=30,shape2=5),g1.beta=c(shape1=20,shape2=20),g2.beta=c(shape1=20,shape2=20), pd.beta=c(shape1=12,shape2=65)))) # handy function to initialize latent state
+    
     return(RET)
 }
 
