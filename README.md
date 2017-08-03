@@ -73,6 +73,8 @@ Once in R, type:
 Files in the tutorial
 ---------------------
 
+<b>WARNING: Windows users should use navigate to the directory called WINDOWS to download the following tutorial files.</b> Mac and GNU/Linux users can use the files in the root github directory.
+
 There are 3 tutorials in 3 R files. Each tutorial presents a slightly different Bayesian model:
  * [R_PCRD_JAGS_firstcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_firstcapt_fixedeff.R) -- 'fixed-effect model with temporary migration (conditions on first capture)'
  * [R_PCRD_JAGS_fullcapt_fixedeff.R](https://github.com/faraway1nspace/PCRD_JAGS_demo/blob/master/R_PCRD_JAGS_fullcapt_fixedeff.R) -- like above, but adds recruitment processes and full-capture modelling.
