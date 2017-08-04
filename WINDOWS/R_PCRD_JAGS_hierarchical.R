@@ -1,19 +1,19 @@
 # this is a demostration of using the Bayesian PCRD in R and JAGS, as used in: "Rankin RW, Nicholson K, Allen S, Kr\'{u}tzen M, Bejder L, Pollock KH. 2016. A full-capture Hierarchical Bayesian model of Pollock's Closed Robust Design and application to dolphins. Frontiers of Marine Science, in Press". There are 3 demonstrations. THIS FILE contains the the Hierarchical Bayesian model, using Gelman half-Student-t hyper-priors that try to explicitly shrink time-varying parameters to their time-invariant, plus random-effects for individual heterogeneity. See other files for the "fixed effect" version using the full-capture histories (i.e., recruitment model); and the  "fixed effect" version which conditions on first-capture.
 # Users should focus on the hyperpriors pr.taug2,pr.taug1,pr.tauphi,pr.taupd, prtaupd2nd, prtaupdi as these control the amount of shrinkage between a fully-time-varying specification to a time-invariant Theta(.) specification. I.e., its only the dispersion parameters (sigma.pdmu,sigma.g1,sigma.g2,sigma.phi,sigma.eps) that receive strongly informative (shrinkage-inducing) hyperpriors. The priors on the 'location' of parameters (pd.mu,g1.mu,g2.mu,phi.mu) are non-informative. 
 
-library(rjags)
-library(boot)
-source("R_PCRD_JAGS_SOURCE.R") # load some handy functions
+library(rjags);
+library(boot);
+source("R_PCRD_JAGS_SOURCE.R"); # load some handy functions
 
 # load the Useless Loop (Western gulf Shark Bay) Tursiops aduncus captures histories from "Nicholson, Bejder, Allen,Krützen, Pollock. 2012. Abundance, survival and temporary emigration of bottlenose dolphins (Tursiops sp.) off Useless Loop in the western gulf of Shark Bay, Western Australia. Marine and Freshwater Research 63:1059–1068."
 # CH are stored as MARK file (.inp) -> convert to 3D array
-MARK.file.name <- "mark_capture_histories.inp"
+MARK.file.name; <- "mark_capture_histories.inp"
 T2 <- c(5, 5, 10, 5,3) # number of secondary periods per primary period
 T <- length(T2) # number of primary periods
-capture.histories = import.mark.inp(MARK.file.name,T2,header=FALSE) # import MARK inp
-Y.tt <- capture.histories[["Y.tt"]] # get the 3D array N x T2 x T
+capture.histories = import.mark.inp(MARK.file.name,T2,header=FALSE); # import MARK inp
+Y.tt <- capture.histories[["Y.tt"]]; # get the 3D array N x T2 x T
 # Y.t <- capture.histories[["Y.t"]] # if you only want total counts per primary period (per individual)
-N = nrow(Y.tt) # number of (observed) individuals 
+N = nrow(Y.tt); # number of (observed) individuals 
 
 # Jags code hierarchical Bayesian PCRD (including individual heterogeneity)
 # time-vary phi, time-invary gamma', time-varying gamma'', time- and session-varying detection probabilities: all shrunk towards time-invariant theta(dot) using hyperpriors on the dispersion parameters (sigma)
@@ -152,7 +152,6 @@ jags.data=list(y=Y.aug, T=T, T2=T2,M=mm,
 # user is expected to be able to initialize the univariate parameters;
 # I provide 'generate.z.psi' function which imputs values of latent states 'z' (forwards-backwards algorithm) as well as values of 'Psi' (full-capture conditioning)
 init.func = function(){
-    
     RET=list(
      phi.mu=runif(1,0.87,0.96), 
      sigma.phi=runif(1,0.0001,0.001)^0.5,
@@ -164,25 +163,19 @@ init.func = function(){
      sigma.pdmu=runif(1,0.01,0.025)^0.5,
      sigma.pd2nd=runif(1,0.005,0.015)^0.5,
      sigma.eps = runif(1,0.0005,0.0023)^0.5
-    )
-    
+    );
     RET=c(RET,list(
       lphi=rnorm(T-1,RET$phi.mu,sd=(RET$sigma.phi)),
       lgamma1=rnorm(T,RET$g1.mu,sd=(RET$sigma.g1)),
       lgamma2=rnorm(T,RET$g2.mu,sd=(RET$sigma.g2)),
       pd_mu=rnorm(T,RET$pd.mu,sd=(RET$sigma.pdmu)),
       eps_i=rnorm(mm,0,sd=RET$sigma.eps))
-      )
-    
-    pd = matrix(NA,max(T2),T)
-    
-    for(t_ in 1:T){ pd[1:T2[t_],t_]<-rnorm(T2[t_],RET$pd_mu[t_],(RET$sigma.pd2nd))}
-    
-    RET=c(RET, list(pd=pd))
-    
-    RET=c(RET, generate.z.psi(y=Y.aug,T2=T2,first.capture=FALSE,z.priors = list(phi.beta=c(shape1=30,shape2=5),g1.beta=c(shape1=20,shape2=20),g2.beta=c(shape1=20,shape2=20), pd.beta=c(shape1=12,shape2=65)))) # handy function to initialize latent state
-    
-    return(RET)
+      );
+    pd = matrix(NA,max(T2),T);
+    for(t_ in 1:T){ pd[1:T2[t_],t_]<-rnorm(T2[t_],RET$pd_mu[t_],(RET$sigma.pd2nd))};
+    RET=c(RET, list(pd=pd));
+    RET=c(RET, generate.z.psi(y=Y.aug,T2=T2,first.capture=FALSE,z.priors = list(phi.beta=c(shape1=30,shape2=5),g1.beta=c(shape1=20,shape2=20),g2.beta=c(shape1=20,shape2=20), pd.beta=c(shape1=12,shape2=65)))); # handy function to initialize latent state
+    return(RET);
 }
 
 # initialize random variables 
@@ -193,16 +186,16 @@ if(nchains == 1){
 }
 
 # RUN JAGS MODEL AND SAMPLE FROM POSTERIOR
-  m3 <- jags.model(file=modname3,data=jags.data,inits=jags.inits,n.chains=nchains,n.adapt=nadapt)
+  m3 <- jags.model(file=modname3,data=jags.data,inits=jags.inits,n.chains=nchains,n.adapt=nadapt);
 # burn-in phase
-  update(m3,nburn) # discard nburn iterations (ensure that chains reach equilibium states)
+  update(m3,nburn); # discard nburn iterations (ensure that chains reach equilibium states)
 # which variables to summarize
-  variable.names <- c("sigma.phi","sigma.g1","sigma.g2","sigma.pdmu","sigma.pd2nd","sigma.eps",paste0("phi[",1:(T-1),"]"),paste0("gamma1[",1:T,"]"),paste0("gamma2[",1:T,"]"),unlist(mapply(as.list(1:T),sapply(X=T2,FUN=seq,from=1,by=1),FUN=function(x,y) paste0("pd[",y,",",x,"]"))),paste0("psi[",1:T,"]"),paste0("alive[",1:T,"]"),paste0("Nin[",1:T,"]"))
+  variable.names <- c("sigma.phi","sigma.g1","sigma.g2","sigma.pdmu","sigma.pd2nd","sigma.eps",paste0("phi[",1:(T-1),"]"),paste0("gamma1[",1:T,"]"),paste0("gamma2[",1:T,"]"),unlist(mapply(as.list(1:T),sapply(X=T2,FUN=seq,from=1,by=1),FUN=function(x,y) paste0("pd[",y,",",x,"]"))),paste0("psi[",1:T,"]"),paste0("alive[",1:T,"]"),paste0("Nin[",1:T,"]"));
 # sample from posterior
-  samp <- coda.samples(m3,variable.names=variable.names,n.iter=niter,thin=thin_) 
+  samp <- coda.samples(m3,variable.names=variable.names,n.iter=niter,thin=thin_); 
 
-  summary(samp) # summarize output
-  plot(samp, ask =TRUE) # inspect chains for adequate mixing and convergence
-  gelman.diag(samp) # inspect chains for convergence (statistics ~ 1 and < 1.1)
+  summary(samp); # summarize output
+  plot(samp, ask =TRUE); # inspect chains for adequate mixing and convergence
+  gelman.diag(samp); # inspect chains for convergence (statistics ~ 1 and < 1.1)
 # DONE PART 1
     
