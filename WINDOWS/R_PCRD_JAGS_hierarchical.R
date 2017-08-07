@@ -7,7 +7,7 @@ source("R_PCRD_JAGS_SOURCE.R"); # load some handy functions
 
 # load the Useless Loop (Western gulf Shark Bay) Tursiops aduncus captures histories from "Nicholson, Bejder, Allen,Krützen, Pollock. 2012. Abundance, survival and temporary emigration of bottlenose dolphins (Tursiops sp.) off Useless Loop in the western gulf of Shark Bay, Western Australia. Marine and Freshwater Research 63:1059–1068."
 # CH are stored as MARK file (.inp) -> convert to 3D array
-MARK.file.name; <- "mark_capture_histories.inp"
+MARK.file.name <- "mark_capture_histories.inp"
 T2 <- c(5, 5, 10, 5,3) # number of secondary periods per primary period
 T <- length(T2) # number of primary periods
 capture.histories = import.mark.inp(MARK.file.name,T2,header=FALSE); # import MARK inp
