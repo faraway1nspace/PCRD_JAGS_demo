@@ -1,0 +1,8 @@
+# set default behaviour
+* text=auto
+
+# Denote binaries
+*.png binary
+*.jpg binary
+*.tif binary
+*.gif binary
