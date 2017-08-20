@@ -1,6 +1,11 @@
 # set default behaviour
 * text=auto
 
+# set windows directory to CRLF
+WINDOWS/*.JAG text eol=crlf
+WINDOWS/*.R text eol=crlf
+WINDOWS/*.inp text eol=crlf
+
 # Denote binaries
 *.png binary
 *.jpg binary
