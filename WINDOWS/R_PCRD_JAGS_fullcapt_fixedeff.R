@@ -3,7 +3,7 @@
 library(rjags)
 source("R_PCRD_JAGS_SOURCE.R") # load some handy functions
 
-# load the Useless Loop (Western gulf Shark Bay) Tursiops aduncus captures histories from "Nicholson, Bejder, Allen,Krützen, Pollock. 2012. Abundance, survival and temporary emigration of bottlenose dolphins (Tursiops sp.) off Useless Loop in the western gulf of Shark Bay, Western Australia. Marine and Freshwater Research 63:1059–1068."
+# load the Useless Loop (Western gulf Shark Bay) Tursiops aduncus captures histories from "Nicholson, Bejder, Allen,Kr\'{u}tzen, Pollock. 2012. Abundance, survival and temporary emigration of bottlenose dolphins (Tursiops sp.) off Useless Loop in the western gulf of Shark Bay, Western Australia. Marine and Freshwater Research 63:1059-1068."
 # CH are stored as MARK file (.inp) -> convert to 3D array
 MARK.file.name <- "mark_capture_histories.inp"
 T2 <- c(5, 5, 10, 5,3) # number of secondary periods per primary period
@@ -129,10 +129,10 @@ init.func = function(){
         pd_b = rgamma(T,30,20),# user to specify
         pd = do.call(function(T2,T){ # user to specify
             pd = matrix(NA,max(T2),T);
-            for(t_ in 1:T){ pd[1:T2[t_],t_]<-rbeta(T2[t_],12,65)}
+            for(t_ in 1:T){ pd[1:T2[t_],t_]<-rbeta(T2[t_],12,65)};
             return(pd)}, args=list(T2=T2,T=T))
     )
-    RET=c(RET, generate.z.psi(y=Y.aug,T2=T2,first.capture=FALSE,z.priors = list(phi.beta=c(shape1=30,shape2=5),g1.beta=c(shape1=20,shape2=20),g2.beta=c(shape1=20,shape2=20), pd.beta=c(shape1=12,shape2=65)))) # handy function to initialize latent states z
+    RET=c(RET, generate.z.psi(y=Y.aug,T2=T2,first.capture=FALSE,z.priors = list(phi.beta=c(shape1=30,shape2=5),g1.beta=c(shape1=20,shape2=20),g2.beta=c(shape1=20,shape2=20), pd.beta=c(shape1=12,shape2=65)))); # handy function to initialize latent states z
     return(RET)
 }
 
