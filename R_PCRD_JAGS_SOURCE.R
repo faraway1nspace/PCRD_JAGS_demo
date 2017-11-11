@@ -84,7 +84,7 @@ generate.z.psi <- function(y,T2,first.capture=FALSE,z.priors = list(phi.beta=c(s
          for(i in 1:mm){
              z[i,1:first.capt[i]]<-rep(NA,first.capt[i]) 
          }
-         RET = list(z=z)
+         RET = list(z = z[1:max(which(first.capt <T)),])         
      } else { # 
      # if modelling full capture histories, need psi estimates too
          RET = list(z = z, psi = psi) # return latents states and psi
