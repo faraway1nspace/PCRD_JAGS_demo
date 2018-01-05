@@ -93,12 +93,13 @@ cat(jags.txt.1,fill=TRUE)
 sink()
 
 # use Parameter-Expansion Data Augmentation method to model unseen individuals and full-capture histories
-n.aug <- N # a N
+n.aug <- 2*N # a N
 Y.aug <- array(NA,c(N+n.aug, max(T2),T))
 mm <- nrow(Y.aug)
 dimnames(Y.aug)[[1]] <- c(row.names(Y.tt),paste0("aug",1:n.aug))
 Y.aug[1:N,,]<-Y.tt # insert observed capture-histories
-Y.aug[(N+1):mm,,]<-0*Y.tt[1:n.aug,,] # all-zero capture histories
+Y.aug[(N+1):mm,,] <- 0*Y.tt[(1+(0:(n.aug-1)) %% N),,]
+# the previous line may seem odd: really it is just increasing the data with an augmented amount of data. The modulus operation part is just to ensure that any NAs in the original data (for non-sampled secondary periods) are included in the augmented array as well
 
 # Data for jags: Capture-histories and Prior parameters
 jags.data=list(y=Y.aug, T=T, T2=T2,M=mm,

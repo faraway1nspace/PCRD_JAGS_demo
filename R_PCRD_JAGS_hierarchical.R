@@ -117,12 +117,13 @@ cat(jags.txt.3,fill=TRUE) # this places the text from object jags.txt.3 into fil
 sink() # this cloes the connection to file 'JAGS_HierBayes.JAG'
 
 # use Parameter-Expansion Data Augmentation method to model unseen individuals and full-capture histories
-n.aug <- N # a N
+n.aug <- 2*N # a N
 Y.aug <- array(NA,c(N+n.aug, max(T2),T))
 mm <- nrow(Y.aug)
 dimnames(Y.aug)[[1]] <- c(row.names(Y.tt),paste0("aug",1:n.aug))
 Y.aug[1:N,,]<-Y.tt # insert observed capture-histories
-Y.aug[(N+1):mm,,]<-0*Y.tt[1:n.aug,,] # all-zero capture histories
+Y.aug[(N+1):mm,,] <- 0*Y.tt[(1+(0:(n.aug-1)) %% N),,]
+# the previous line may seem odd: really it is just increasing the data with an augmented amount of data. The modulus operation part is just to ensure that any NAs in the original data (for non-sampled secondary periods) are included in the augmented array as well
 
 # Data for jags: Capture-histories and Hyper-Prior parameters
 # Users should familiarize themselves with the half-student-t distribution for controlling the dispersion hyperparameters on sigma.g1, sigma.g2, sigma.phi, sigma.pdmu,sigma.pd2mu,sigma.eps. In particular, the 'degrees of freedeom' hyperparameter 'nu' in half-t(0,tau,nu). nu=1 is the half-cauchy, and likely too much variation for a logit-Normal distribution. nu=2 is recommended. Tau should be << 1 to ensure that values of theta don't cluster on 0 and 1 on the probability scale. We suggest tau = 0.3. 
