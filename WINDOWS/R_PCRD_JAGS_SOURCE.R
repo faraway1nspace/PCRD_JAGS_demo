@@ -35,6 +35,56 @@ import.mark.inp <- function(
            ))
 }
 
+# function to convert a data.frame into a capture history array
+import.data.frame <- function(d, # matrix or data.frame
+                            T2 = NULL, # vector 
+                            ch.columns = NULL, # integer vector identifying the capture history columns
+                            id.vec = NULL# character vector of individual id's or column identifying which column corresponds to individual IDs, if NULL, assumes the row.names are IDs
+                            ){
+    if(is.null(T2)){ stop("Please provide argument T2: An integer vector of the number of secondary periods per primary period")}
+    if(is.null(ch.columns)){ stop("Please provide argument ch.columns: An integer vector which identifies which columns are capture data")}
+    if(sum(T2)!=length(ch.columns)){ stop("mismatch between number of columns in ch.columns and T2")}
+    # number of primary periods
+    T = length(T2)
+    # number of individuals
+    N <- nrow(d) # number of (observed) individuals
+    if(is.null(id.vec)){
+        warning("You haven't supplied argument id.vec: a character vector of individual IDs or column identifying which column corresponds to individual IDs. If NULL, assumes the row.names are IDs")
+        id <- row.names(d)
+    } else {
+        if(length(id.vec)==N){
+            id <- id.vec
+        } else if(length(id.vec)==1 & all(id.vec %in% 1:ncol(d))){
+            id <- d[,id.vec]
+        }
+        if(length(unique(id))<length(id)){
+            warning("the supplied IDs seem non-unique. Whatever IDs you supplied, they should be unique identifiers")
+        }
+    }
+    # expand the CH into a (ragged) 3D array: [id, secondary periods, primary periods]
+    Y.tt <- array(NA,c(N,max(T2),T)) # N x max(T2) x T
+    for(x in 1:T){
+        splitx=ch.columns[unique((sum(c(0,T2)[1:x])+1):(sum(c(0,T2)[1:(x+1)])))]
+        Y.tt[,1:length(splitx),x] <- as.matrix(d[,splitx])
+        if(class(as.vector(as.matrix(d[,splitx]))) =="character"){ stop("Error: You have characters where you should have 0/1 in the columns denoted by 'ch.columns'. Check your data and the ch.columns argument") }
+    }
+    dimnames(Y.tt)[[1]] <- id
+    # collect other, non chapture history data
+    if(any(1:ncol(d)%in%ch.columns==FALSE)){
+        iOtherCol <- which(1:ncol(d)%in%ch.columns==FALSE)
+        other.data=d[,iOtherCol];
+        row.names(other.data)=id
+    }
+    # collapse 3D array just into NxT, summing counts per primary periods
+    Y.t <-apply(Y.tt,c(1,3),function(x) sum(x,na.rm=TRUE)) # sum captures per primary period
+return(
+        list(Y.t = Y.t, # ch:returns N x T matrix of counts per primary period
+           Y.tt = Y.tt, # ch: returns 3D array, N x T2 x T, shows which 2nd-ary periods had captures
+           other.data=other.data # other data (not processed by this function)
+           ))    
+    }
+     
+
 # backwards forward sampler to draw latent states (consistent with the data)
 generate.z.psi <- function(y,T2,first.capture=FALSE,z.priors = list(phi.beta=c(shape1=30,shape2=5),g1.beta=c(shape1=20,shape2=20),g2.beta=c(shape1=20,shape2=20), pd.beta=c(shape1=12,shape2=65)),exclude_=1, dead_=2,out_=3,in_=4, nstates = 4){
     #exclude_=1; dead_=2;out_=3;in_=4; nstates = 4           
